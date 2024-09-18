@@ -8,28 +8,37 @@ namespace MonsterTradingCardsGame
 {
     internal class Deck
     {
-        private LinkedList<Card> cards;
+        private readonly List<Card> _cards;
+
+        public static readonly int DeckSize = 4;
 
         public Deck()
         {
-            cards = new LinkedList<Card>();
+            _cards = new List<Card>(DeckSize);
         }
 
-        public void Add(Card card)
+        public int Count { get { return _cards.Count; } }
+
+        public void AddCard(Card card)
         {
-            if (cards.Count == 4)
+            if(_cards.Count > DeckSize)
             {
-                Console.WriteLine("Your Deck is full!");
+                Console.WriteLine("Deck is full!");
                 return;
             }
-
-            cards.AddLast(card);
+ 
+            _cards.Add(card);
         }
 
-        public void Remove(Card card)
+        public Card? GetCard(int index)
         {
-            cards.Remove(card);
-        }
+            if (index < 0 || index >= _cards.Count)
+            {
+                Console.WriteLine("Illegal index!");
+                return null;
+            }
 
+            return _cards[index];
+        }
     }
 }

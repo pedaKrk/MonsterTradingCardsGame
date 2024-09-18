@@ -8,7 +8,8 @@ namespace MonsterTradingCardsGame
 {
     internal class Package
     {
-        public static int Price = 5;
+        public static readonly int Price = 5;
 
+        public Package() { }
     }
 }

@@ -8,11 +8,13 @@ namespace MonsterTradingCardsGame
 {
     internal class User
     {
-        private Credentials _credentials;
+        private readonly Credentials _credentials;
 
-        private Stack _stack;
+        private readonly Stack _stack;
 
-        private Deck _deck;
+        private readonly Deck _deck;
+
+        private int _coins;
 
         public User(string username, string password)
         {
@@ -20,20 +22,24 @@ namespace MonsterTradingCardsGame
             _stack = new Stack();
             _deck = new Deck();
 
-            Coins = 20;
+            _coins = 20;
         }
+        public int Coins { get { return _coins; } }
 
-        public int Coins {  get; set; }
+        public void RemoveCoins(int amount)
+        {
+            _coins -= amount;
+        }
 
         public void BuyPack()
         {
-            if ((Coins - Package.Price) < 0)
+            if (( - Package.Price) < 0)
             {
                 Console.WriteLine("Not enough Coins to purchase Package!");
                 return;
             }
 
             //ToDo: logic
-        }
+        }  
     }
 }

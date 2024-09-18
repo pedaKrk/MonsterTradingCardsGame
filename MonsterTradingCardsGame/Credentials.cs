@@ -8,14 +8,14 @@ namespace MonsterTradingCardsGame
 {
     internal class Credentials
     {
-        private string _username;
+        private readonly string _username;
+
+        private string _password;
 
         public Credentials(string username, string password)
         {
-            this._username = username;
-            Password = password;
+            _username = username;
+            _password = password;
         }
-
-        public string Password { get; set; }
     }
 }
