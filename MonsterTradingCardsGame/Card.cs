@@ -6,17 +6,29 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame
 {
+    public enum CardType
+    {
+        Water,
+        Fire,
+        Normal
+    }
     internal class Card
     {
         private readonly int _damage;
-        public Card(string name, int damage, string element /*später ein enum zb*/) 
+
+        private readonly string _name;
+
+        private readonly CardType _element;
+     
+        public Card(string name, int damage, CardType element /*später ein enum zb*/) 
         { 
-            Name = name;
+            _name = name;
             _damage = damage;
-            Element = element;
+            _element = element;
         }
 
-        public string Name { get; }
-        public string Element { get; }
+        public string Name { get { return _name; } }
+        public int Damage { get { return _damage; } }
+        public CardType Element { get { return _element; } }
     }
 }
