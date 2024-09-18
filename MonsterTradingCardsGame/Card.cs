@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame
 {
-    public enum CardType
-    {
-        Water,
-        Fire,
-        Normal
-    }
     internal abstract class Card
     {
         private readonly int _damage;
@@ -20,7 +14,7 @@ namespace MonsterTradingCardsGame
 
         private readonly CardType _element;
      
-        public Card(string name, int damage, CardType element) 
+        public Card(int damage, string name, CardType element) 
         { 
             _damage = damage;
             _name = name;
