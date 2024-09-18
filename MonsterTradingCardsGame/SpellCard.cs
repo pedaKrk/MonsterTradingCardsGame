@@ -8,6 +8,10 @@ namespace MonsterTradingCardsGame
 {
     internal sealed class SpellCard : Card
     {
-        public SpellCard(int damage, string name, CardType.) { }
+        public SpellCard(int damage, string name, CardType element)
+            : base(damage, name, element)
+        {
+
+        }
     }
 }

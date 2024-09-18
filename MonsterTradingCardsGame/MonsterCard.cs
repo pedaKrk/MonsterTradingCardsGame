@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame
 {
-    internal class MonsterCard
+    internal sealed class MonsterCard : Card
     {
+        public MonsterCard(int damage, string name, CardType element)
+            : base(damage, name, element)
+        {
+
+        }
     }
 }
