@@ -12,7 +12,7 @@ namespace MonsterTradingCardsGame
         Fire,
         Normal
     }
-    internal class Card
+    internal abstract class Card
     {
         private readonly int _damage;
 
@@ -20,15 +20,15 @@ namespace MonsterTradingCardsGame
 
         private readonly CardType _element;
      
-        public Card(string name, int damage, CardType element /*später ein enum zb*/) 
+        public Card(string name, int damage, CardType element) 
         { 
-            _name = name;
             _damage = damage;
+            _name = name;
             _element = element;
         }
 
-        public string Name { get { return _name; } }
         public int Damage { get { return _damage; } }
+        public string Name { get { return _name; } }
         public CardType Element { get { return _element; } }
     }
 }
