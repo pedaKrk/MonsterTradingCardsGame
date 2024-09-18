@@ -8,5 +8,11 @@ namespace MonsterTradingCardsGame
 {
     internal class Stack
     {
+        private List<Card> _stack;
+
+        public Stack() 
+        { 
+            _stack = new List<Card>();
+        }
     }
 }
