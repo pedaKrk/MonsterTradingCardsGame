@@ -33,7 +33,7 @@ namespace MonsterTradingCardsGame
 
         public void BuyPack()
         {
-            if (( - Package.Price) < 0)
+            if ((Coins - Package.Price) < 0)
             {
                 Console.WriteLine("Not enough Coins to purchase Package!");
                 return;
