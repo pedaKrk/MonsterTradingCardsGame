@@ -40,6 +40,26 @@ namespace MonsterTradingCardsGame
             }
 
             //ToDo: logic
-        }  
+        }
+        
+        public void AddCardToDeck(Card card)
+        {
+            _deck.AddCard(card);
+        }
+
+        public void RemoveCardFromDeck(Card card)
+        {
+            _deck.RemoveCard(card);
+        }
+
+        public void RemoveCardFromDeckAt(int index)
+        {
+            _deck.RemoveCard(index);
+        }
+
+        public void SwapCardInDeck(Card oldCard, Card newCard) 
+        {
+            _deck.SwapCard(oldCard, newCard);
+        }
     }
 }

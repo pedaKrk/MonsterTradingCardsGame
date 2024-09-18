@@ -30,15 +30,47 @@ namespace MonsterTradingCardsGame
             _cards.Add(card);
         }
 
+        public void RemoveCard(int index)
+        {
+            if (IsValidIndex(index))
+            {
+                Console.WriteLine("Illegal index!");
+                return;
+            }
+
+            _cards.RemoveAt(index);
+        }
+
+        public void RemoveCard(Card card)
+        {
+            _cards.Remove(card);
+        }
+
         public Card? GetCard(int index)
         {
-            if (index < 0 || index >= _cards.Count)
+            if (IsValidIndex(index))
             {
                 Console.WriteLine("Illegal index!");
                 return null;
             }
 
             return _cards[index];
+        }
+
+        public void SwapCard(Card oldCard, Card newCard)
+        {
+            RemoveCard(oldCard);
+            AddCard(newCard);
+        }
+
+        private bool IsValidIndex(int index)
+        {
+            if (index < 0 || index >= _cards.Count)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
