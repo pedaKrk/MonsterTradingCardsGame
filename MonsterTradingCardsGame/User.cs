@@ -39,7 +39,11 @@ namespace MonsterTradingCardsGame
                 return;
             }
 
-            //ToDo: logic
+            Coins -= Package.Price;
+
+            Package package = new ();
+
+            _stack.AddCards(package.Open());
         }
         
         public void AddCardToDeck(Card card)
@@ -60,6 +64,18 @@ namespace MonsterTradingCardsGame
         public void SwapCardInDeck(Card oldCard, Card newCard) 
         {
             _deck.SwapCard(oldCard, newCard);
+        }
+
+        public override string ToString()
+        {
+            string cardsString = "";
+
+            foreach(Card card in _stack)
+            {
+                cardsString += $"{card.ToString()}, ";
+            }
+
+            return cardsString;
         }
     }
 }

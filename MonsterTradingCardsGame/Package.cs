@@ -10,6 +10,24 @@ namespace MonsterTradingCardsGame
     {
         public static readonly int Price = 5;
 
-        public Package() { }
+        private readonly List<Card> _pack;
+
+        private const int PackSize = 5;
+
+        public Package() 
+        {
+            _pack = new List<Card>(PackSize);
+
+            _pack.Add(new MonsterCard(50, "Monster1", CardType.Fire));
+            _pack.Add(new MonsterCard(50, "Monster2", CardType.Water));
+            _pack.Add(new MonsterCard(50, "Monster1", CardType.Normal));
+            _pack.Add(new SpellCard(50, "Spell1", CardType.Fire));
+            _pack.Add(new SpellCard(50, "Spell2", CardType.Water));
+        }
+
+        public List<Card> Open()
+        {
+            return _pack;
+        }
     }
 }

@@ -5,3 +5,7 @@ Console.WriteLine("Hello, World!");
 
 User UserA = new User("Player1", "123");
 
+UserA.BuyPack();
+
+UserA.ToString();
+

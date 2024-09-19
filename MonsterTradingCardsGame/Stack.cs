@@ -22,6 +22,14 @@ namespace MonsterTradingCardsGame
             _stack.Add(card);
         }
 
+        public void AddCards(List<Card> cards)
+        {
+            foreach (Card card in cards)
+            {
+                _stack.Add(card);
+            }
+        }
+
         public void RemoveCard(Card card) 
         {
             _stack.Remove(card);

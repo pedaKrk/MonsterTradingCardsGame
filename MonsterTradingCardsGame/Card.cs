@@ -24,5 +24,10 @@ namespace MonsterTradingCardsGame
         public int Damage { get { return _damage; } }
         public string Name { get { return _name; } }
         public CardType Element { get { return _element; } }
+
+        public override string ToString()
+        {
+            return $"name: {_name}, damage: {Damage}, element {_element}";
+        }
     }
 }
