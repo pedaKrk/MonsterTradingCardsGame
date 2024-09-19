@@ -27,7 +27,7 @@ namespace MonsterTradingCardsGame
 
         public List<Card> Open()
         {
-            return _pack;
+            return new List<Card>(_pack);
         }
     }
 }
