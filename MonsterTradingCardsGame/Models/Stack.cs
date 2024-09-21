@@ -44,5 +44,16 @@ namespace MonsterTradingCardsGame.Models
         {
             return new List<Card>(_stack);
         }
+
+        public override string ToString()
+        {
+            string str = string.Empty;
+            foreach (Card card in _stack) 
+            {
+                str += card.ToString() + "\n";
+            }
+
+            return str;
+        }
     }
 }

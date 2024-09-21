@@ -40,7 +40,9 @@ namespace MonsterTradingCardsGame.Models
                 return;
             }
 
-            //ToDo: logic
+            Package package = new Package();
+
+            _stack.AddCards(package.Open());
         }
 
         public void AddCardToDeck(Card card)
@@ -61,6 +63,11 @@ namespace MonsterTradingCardsGame.Models
         public void SwapCardInDeck(Card oldCard, Card newCard)
         {
             _deck.SwapCard(oldCard, newCard);
+        }
+
+        public override string ToString()
+        {
+            return _stack.ToString();
         }
     }
 }
