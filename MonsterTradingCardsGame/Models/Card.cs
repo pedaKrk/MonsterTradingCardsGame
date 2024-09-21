@@ -9,11 +9,11 @@ namespace MonsterTradingCardsGame.Models
 {
     internal abstract class Card
     {
-        private readonly int _damage;
+        protected readonly int _damage;
 
-        private readonly string _name;
+        protected readonly string _name;
 
-        private readonly CardType _element;
+        protected readonly CardType _element;
 
         public Card(int damage, string name, CardType element)
         {
@@ -26,9 +26,6 @@ namespace MonsterTradingCardsGame.Models
         public string Name { get { return _name; } }
         public CardType Element { get { return _element; } }
 
-        public override string ToString()
-        {
-            return $"name: {_name}, damage: {Damage}, element {_element}";
-        }
+        public abstract string ToString();
     }
 }

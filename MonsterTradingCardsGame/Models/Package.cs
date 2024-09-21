@@ -19,9 +19,9 @@ namespace MonsterTradingCardsGame.Models
         {
             _pack = new List<Card>(PackSize);
 
-            _pack.Add(new MonsterCard(50, "Monster1", CardType.Fire));
-            _pack.Add(new MonsterCard(50, "Monster2", CardType.Water));
-            _pack.Add(new MonsterCard(50, "Monster1", CardType.Normal));
+            _pack.Add(new MonsterCard(50, "Monster1", 200, CardType.Fire));
+            _pack.Add(new MonsterCard(50, "Monster2", 200, CardType.Water));
+            _pack.Add(new MonsterCard(50, "Monster1", 200, CardType.Normal));
             _pack.Add(new SpellCard(50, "Spell1", CardType.Fire));
             _pack.Add(new SpellCard(50, "Spell2", CardType.Water));
         }

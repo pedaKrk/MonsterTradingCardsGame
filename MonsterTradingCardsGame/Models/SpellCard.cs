@@ -14,5 +14,10 @@ namespace MonsterTradingCardsGame.Models
         {
 
         }
+
+        public override string ToString()
+        {
+            return $"name: {_name}, damage: {_damage}, element {_element}";
+        }
     }
 }
