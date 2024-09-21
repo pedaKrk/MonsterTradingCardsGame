@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonsterTradingCardsGame.Enums;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
     internal class Package
     {
@@ -14,7 +15,7 @@ namespace MonsterTradingCardsGame
 
         private const int PackSize = 5;
 
-        public Package() 
+        public Package()
         {
             _pack = new List<Card>(PackSize);
 

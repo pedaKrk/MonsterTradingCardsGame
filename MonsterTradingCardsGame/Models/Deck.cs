@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
     internal class Deck
     {
@@ -21,12 +21,12 @@ namespace MonsterTradingCardsGame
 
         public void AddCard(Card card)
         {
-            if(_cards.Count > DeckSize)
+            if (_cards.Count > DeckSize)
             {
                 Console.WriteLine("Deck is full!");
                 return;
             }
- 
+
             _cards.Add(card);
         }
 

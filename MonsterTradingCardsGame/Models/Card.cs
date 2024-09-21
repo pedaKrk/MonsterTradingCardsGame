@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonsterTradingCardsGame.Enums;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
     internal abstract class Card
     {
@@ -13,9 +14,9 @@ namespace MonsterTradingCardsGame
         private readonly string _name;
 
         private readonly CardType _element;
-     
-        public Card(int damage, string name, CardType element) 
-        { 
+
+        public Card(int damage, string name, CardType element)
+        {
             _damage = damage;
             _name = name;
             _element = element;

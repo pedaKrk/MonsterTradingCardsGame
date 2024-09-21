@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
     internal class Stack
     {
         private List<Card> _stack;
 
-        public Stack() 
-        { 
+        public Stack()
+        {
             _stack = new List<Card>();
         }
 
@@ -30,7 +30,7 @@ namespace MonsterTradingCardsGame
             }
         }
 
-        public void RemoveCard(Card card) 
+        public void RemoveCard(Card card)
         {
             _stack.Remove(card);
         }
@@ -40,8 +40,8 @@ namespace MonsterTradingCardsGame
             return _stack[index];
         }
 
-        public List<Card> GetStack() 
-        { 
+        public List<Card> GetStack()
+        {
             return new List<Card>(_stack);
         }
     }

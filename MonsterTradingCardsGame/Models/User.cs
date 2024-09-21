@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonsterTradingCardsGame.Authentication;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
     internal class User
     {
@@ -33,19 +34,15 @@ namespace MonsterTradingCardsGame
 
         public void BuyPack()
         {
-            if ((Coins - Package.Price) < 0)
+            if (Coins - Package.Price < 0)
             {
                 Console.WriteLine("Not enough Coins to purchase Package!");
                 return;
             }
 
-            Coins -= Package.Price;
-
-            Package package = new ();
-
-            _stack.AddCards(package.Open());
+            //ToDo: logic
         }
-        
+
         public void AddCardToDeck(Card card)
         {
             _deck.AddCard(card);
@@ -61,21 +58,9 @@ namespace MonsterTradingCardsGame
             _deck.RemoveCard(index);
         }
 
-        public void SwapCardInDeck(Card oldCard, Card newCard) 
+        public void SwapCardInDeck(Card oldCard, Card newCard)
         {
             _deck.SwapCard(oldCard, newCard);
-        }
-
-        public override string ToString()
-        {
-            string cardsString = "";
-
-            foreach(Card card in _stack)
-            {
-                cardsString += $"{card.ToString()}, ";
-            }
-
-            return cardsString;
         }
     }
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonsterTradingCardsGame.Enums;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.Models
 {
-    internal sealed class SpellCard : Card
+    internal sealed class MonsterCard : Card
     {
-        public SpellCard(int damage, string name, CardType element)
+        public MonsterCard(int damage, string name, CardType element)
             : base(damage, name, element)
         {
 
