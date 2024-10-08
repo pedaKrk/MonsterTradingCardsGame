@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.Enums
+namespace MonsterTradingCardsGame.Models
 {
     internal enum CardType
     {

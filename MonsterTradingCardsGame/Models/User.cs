@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MonsterTradingCardsGame.Authentication;
 
 namespace MonsterTradingCardsGame.Models
 {
     internal class User
     {
-        private readonly Credentials _credentials;
+
+        private string _username;
+
+        private string _password;
 
         private readonly Stack _stack;
 
@@ -19,13 +21,17 @@ namespace MonsterTradingCardsGame.Models
 
         public User(string username, string password)
         {
-            _credentials = new Credentials(username, password);
+            _username = username;
+            _password = password;
             _stack = new Stack();
             _deck = new Deck();
 
             _coins = 20;
         }
         public int Coins { get { return _coins; } }
+
+        public string Username { get { return _username; } }
+        public string Password { get { return _password; } }
 
         public void RemoveCoins(int amount)
         {
@@ -65,9 +71,14 @@ namespace MonsterTradingCardsGame.Models
             _deck.SwapCard(oldCard, newCard);
         }
 
-        public override string ToString()
+        public string StackToString()
         {
             return _stack.ToString();
+        }
+
+        public string DeckToString()
+        {
+            return _deck.ToString();
         }
     }
 }

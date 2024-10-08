@@ -72,5 +72,25 @@ namespace MonsterTradingCardsGame.Models
 
             return true;
         }
+
+        public override string ToString()
+        {
+            string str = "Deck:\n";
+             
+            for(int i = 0; i < DeckSize; i++)
+            {
+                if(i >= Count)
+                {
+                    str += $"{i}:\n";
+                    continue;
+                }
+
+                str += $"{i}: {_cards[i].ToString()}\n";
+            }
+
+            str += "---------\n\n";
+
+            return str;
+        }
     }
 }
