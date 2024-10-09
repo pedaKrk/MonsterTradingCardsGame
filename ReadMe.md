@@ -1,0 +1,2 @@
+# MonsterTradingCardsGame
+![Klassendiagramm](./ClassDiagramm.png)

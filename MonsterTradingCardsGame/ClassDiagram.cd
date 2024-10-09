@@ -14,7 +14,7 @@
       <FileName>Models\Deck.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MonsterTradingCardsGame.Models.MonsterCard" Collapsed="true">
+  <Class Name="MonsterTradingCardsGame.Models.MonsterCard">
     <Position X="10.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -28,7 +28,7 @@
       <FileName>Models\Package.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MonsterTradingCardsGame.Models.SpellCard" Collapsed="true">
+  <Class Name="MonsterTradingCardsGame.Models.SpellCard">
     <Position X="8.25" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -45,7 +45,7 @@
   <Class Name="MonsterTradingCardsGame.Models.User" Collapsed="true">
     <Position X="14.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAAAAggAACAAIAQAgAAAAAEgACAAAAhA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAAgwAACAAIAQAgAAACAAoACAAAAhA=</HashCode>
       <FileName>Models\User.cs</FileName>
     </TypeIdentifier>
   </Class>

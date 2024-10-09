@@ -10,8 +10,8 @@ namespace MonsterTradingCardsGame.BusinessLogic
     {
         public static async Task<(string method, string path, string version)> ReadRequestLineAsync(StreamReader reader)
         {
-            var line = await reader.ReadLineAsync();
-            if (line == null) throw new Exception("Invalid HTTP request");
+            var line = await reader.ReadLineAsync() ?? throw new Exception("Invalid HTTP request");
+
             var httpParts = line.Split(' ');
             return (httpParts[0], httpParts[1], httpParts[2]);
         }

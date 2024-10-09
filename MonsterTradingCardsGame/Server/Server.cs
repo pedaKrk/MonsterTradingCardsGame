@@ -15,7 +15,7 @@ namespace MonsterTradingCardsGame.Server
     internal class Server
     {
 
-        private static int _port = 8080;
+        private static int _port = 10001;
         
         public static void Run()
         {
