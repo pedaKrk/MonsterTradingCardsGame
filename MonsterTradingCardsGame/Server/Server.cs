@@ -81,8 +81,11 @@ namespace MonsterTradingCardsGame.Server
             switch (path)
             {
                 case "/users":
-                    var userHandler = new UserHandler(responseHandler);
-                    await userHandler.HandleUserRegistrationAsync(requestBody);
+                    await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody);
+                    break;
+
+                case "/sessions":
+                    await UserHandler.HandleUserLoginAsync(responseHandler, requestBody);
                     break;
 
                 default:

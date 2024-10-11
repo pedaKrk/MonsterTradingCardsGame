@@ -1,24 +1,85 @@
-﻿# VS integrated REST Client
+﻿# 1) Create Users (Registration)
 
-### a simple GET request
-GET http://localhost:8080/ HTTP/1.1
-
-
-
-### a GET request from the integration-test script
-#curl -i -X GET http://localhost:10001/cards --header "Authorization: Bearer kienboec-mtcgToken"
-GET http://localhost:8080/cards HTTP/1.1
-Authorization: Bearer kienboec-mtcgToken
-
-
-
-### POST request from the integration-test script
-#curl -i -X POST http://localhost:10001/users --header "Content-Type: application/json" -d "{\"Username\":\"kienboec\", \"Password\":\"daniel\"}"
-POST http://localhost:8080/users HTTP/1.1
+### Create User: kienboec
+POST http://localhost:10001/users
 Content-Type: application/json
 
 {
-    "Username":"kienboec", 
-    "Password":"daniel"
+  "Username": "kienboec",
+  "Password": "daniel"
 }
 
+### Create User: altenhof
+POST http://localhost:10001/users
+Content-Type: application/json
+
+{
+  "Username": "altenhof",
+  "Password": "markus"
+}
+
+### Create User: admin
+POST http://localhost:10001/users
+Content-Type: application/json
+
+{
+  "Username": "admin",
+  "Password": "istrator"
+}
+
+### Should fail - User already exists
+POST http://localhost:10001/users
+Content-Type: application/json
+
+{
+  "Username": "kienboec",
+  "Password": "daniel"
+}
+
+### Should fail - User already exists
+POST http://localhost:10001/users
+Content-Type: application/json
+
+{
+  "Username": "kienboec",
+  "Password": "different"
+}
+
+
+### 2) Login Users
+
+### Login User: kienboec
+POST http://localhost:10001/sessions
+Content-Type: application/json
+
+{
+  "Username": "kienboec",
+  "Password": "daniel"
+}
+
+### Login User: altenhof
+POST http://localhost:10001/sessions
+Content-Type: application/json
+
+{
+  "Username": "altenhof",
+  "Password": "markus"
+}
+
+### Login User: admin
+POST http://localhost:10001/sessions
+Content-Type: application/json
+
+{
+  "Username": "admin",
+  "Password": "istrator"
+}
+
+### Should fail - Login failed
+POST http://localhost:10001/sessions
+Content-Type: application/json
+
+{
+  "Username": "kienboec",
+  "Password": "different"
+}

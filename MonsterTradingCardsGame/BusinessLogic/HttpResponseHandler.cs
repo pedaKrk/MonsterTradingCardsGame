@@ -37,6 +37,18 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
         }
 
+        public async Task SendOkAsync(object? responseBody = null)
+        {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("200 OK", "application/json", jsonResponse);
+                return;
+            }
+            
+            await SendResponseAsync("200 OK", null, null);          
+        }
+
         public async Task SendCreatedResponseAsync(User user)
         {
             var responseBody = JsonSerializer.Serialize(user);
@@ -53,9 +65,19 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await SendResponseAsync("400 Bad Request", null, null);
         }
 
+        public async Task SendUnauthorizedAsync()
+        {
+            await SendResponseAsync("401 Unauthorized", null, null);
+        }
+
         public async Task SendNotFoundAsync()
         {
             await SendResponseAsync("404 Not Found", null, null);
+        }
+
+        public async Task SendInternalServerErrorAsync()
+        {
+            await SendResponseAsync("500 Internal Server Error", null, null);
         }
     }
 }

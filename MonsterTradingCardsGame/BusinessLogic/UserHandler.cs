@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Models;
+﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 {
     internal class UserHandler
     {
-        private readonly HttpResponseHandler _responseHandler;
-
-        public UserHandler(HttpResponseHandler responseHandler)
-        {
-            _responseHandler = responseHandler;
-        }
-
-        public async Task HandleUserRegistrationAsync(string requestBody)
+        public static async Task HandleUserRegistrationAsync(HttpResponseHandler responseHandler, string requestBody)
         {
             try
             {
@@ -25,25 +19,63 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 if (string.IsNullOrWhiteSpace(newUser?.Username) || string.IsNullOrWhiteSpace(newUser?.Password))
                 {
-                    await _responseHandler.SendBadRequestAsync();
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                if (InMemoryDatabase.UserExists(newUser.Username))
+                {
+                    await responseHandler.SendConflictResponseAsync();
                     return;
                 }
 
                 Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
-                await _responseHandler.SendCreatedResponseAsync(newUser);
+                InMemoryDatabase.AddUser(newUser);
 
+                await responseHandler.SendCreatedResponseAsync(newUser);
+            }
+            catch (JsonException)
+            {
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
 
-                // Check if the user already exists
-                // response: 409 Conflict
+        public static async Task HandleUserLoginAsync(HttpResponseHandler responseHandler, string requestBody)
+        {
+            try
+            {
+                Console.WriteLine("Login:\n");
+                var loginUser = JsonSerializer.Deserialize<User>(requestBody);
+               
+                Console.WriteLine($"Username: {loginUser?.Username}, Password: {loginUser?.Password}");
 
-                //Register new user
-                //response: 201 Created
+                if (string.IsNullOrWhiteSpace(loginUser?.Username) || string.IsNullOrWhiteSpace(loginUser?.Password))
+                {
+                    Console.WriteLine("Not Username or Password provided.");
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                var user = InMemoryDatabase.Users.FirstOrDefault(u => u.Username == loginUser.Username);
+
+                if (user == null || loginUser.Password != user.Password) 
+                {
+                    Console.WriteLine("User not found or wrong credentials.");
+                    await responseHandler.SendUnauthorizedAsync();
+                    return;
+                }
+
+                user.Token = TokenService.GenerateToken(user.Username);
+
+                Console.WriteLine($"User {loginUser.Username} logged in successfully.");
+                await responseHandler.SendOkAsync(new { user });
 
             }
             catch (JsonException)
             {
-                await _responseHandler.SendBadRequestAsync();  // 400 Bad Request
+                await responseHandler.SendBadRequestAsync();
             }
+
         }
     }
 }
