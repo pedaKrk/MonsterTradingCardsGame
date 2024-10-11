@@ -49,10 +49,9 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await SendResponseAsync("200 OK", null, null);          
         }
 
-        public async Task SendCreatedResponseAsync(User user)
+        public async Task SendCreatedResponseAsync()
         {
-            var responseBody = JsonSerializer.Serialize(user);
-            await SendResponseAsync("201 Created", "application/json", responseBody);
+            await SendResponseAsync("201 Created", null, null);
         }
 
         public async Task SendConflictResponseAsync()

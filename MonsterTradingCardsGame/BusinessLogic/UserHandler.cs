@@ -32,7 +32,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
                 InMemoryDatabase.AddUser(newUser);
 
-                await responseHandler.SendCreatedResponseAsync(newUser);
+                await responseHandler.SendCreatedResponseAsync();
             }
             catch (JsonException)
             {
