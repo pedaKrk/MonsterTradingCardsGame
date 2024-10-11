@@ -68,7 +68,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 user.Token = TokenService.GenerateToken(user.Username);
 
                 Console.WriteLine($"User {loginUser.Username} logged in successfully.");
-                await responseHandler.SendOkAsync(new { user });
+                await responseHandler.SendOkAsync(new { user.Token });
 
             }
             catch (JsonException)

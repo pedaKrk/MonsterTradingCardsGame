@@ -28,12 +28,12 @@ namespace MonsterTradingCardsGame.BusinessLogic
             if (!string.IsNullOrEmpty(responseBody))
             {
                 _writer.WriteLine($"Content-Length: {responseBody.Length}");
-                _writer.WriteLine(); // Empty line indicates the end of headers
+                _writer.WriteLine();
                 await _writer.WriteLineAsync(responseBody);
             }
             else
             {
-                _writer.WriteLine(); // Only headers, no body
+                _writer.WriteLine();
             }
         }
 

@@ -12,13 +12,11 @@ namespace MonsterTradingCardsGame.Database
         public static List<User> Users { get; } = new List<User>();
         public static List<Card> Cards { get; } = new List<Card>();
 
-        // Method to add user
         public static void AddUser(User user)
         {
             Users.Add(user);
         }
 
-        // Method to check if a user already exists
         public static bool UserExists(string username)
         {
             return Users.Any(u => u.Username == username);
