@@ -9,8 +9,8 @@ namespace MonsterTradingCardsGame.Models
     internal class User
     {
 
-        public string Username { get; }
-        public string Password { get; }
+        public string Username { get; private set;  }
+        public string Password { get; private set; }
         public int Coins { get; set; }
 
         private readonly Stack _stack;

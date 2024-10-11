@@ -65,6 +65,13 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
+                if (!string.IsNullOrWhiteSpace(user.Token) && TokenService.IsValidToken(user.Username, user.Token))
+                {
+                    Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
+                    await responseHandler.SendOkAsync(new { user.Token });
+                    return;
+                }
+
                 user.Token = TokenService.GenerateToken(user.Username);
 
                 Console.WriteLine($"User {loginUser.Username} logged in successfully.");
