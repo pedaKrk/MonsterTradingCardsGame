@@ -7,7 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCardsGame", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{93C7D941-317C-4B3D-B7AC-43E274A57185}"
 	ProjectSection(SolutionItems) = preProject
-		ClassDiagramm.png = ClassDiagramm.png
 		ReadMe.md = ReadMe.md
 	EndProjectSection
 EndProject

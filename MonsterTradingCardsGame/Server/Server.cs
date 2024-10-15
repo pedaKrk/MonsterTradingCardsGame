@@ -78,6 +78,8 @@ namespace MonsterTradingCardsGame.Server
 
         private static async Task HandlePostAsync(HttpResponseHandler responseHandler, string path, string requestBody)
         {
+            // ToDo: Dictionary für paths
+
             switch (path)
             {
                 case "/users":
