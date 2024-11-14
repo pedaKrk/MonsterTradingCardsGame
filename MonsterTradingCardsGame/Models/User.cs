@@ -11,6 +11,7 @@ namespace MonsterTradingCardsGame.Models
 
         public string Username { get; private set;  }
         public string Password { get; private set; }
+        public int Id { get; set; }
         public int Coins { get; set; }
 
         private readonly Stack _stack;
