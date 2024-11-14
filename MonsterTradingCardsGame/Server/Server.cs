@@ -90,11 +90,31 @@ namespace MonsterTradingCardsGame.Server
                     await UserHandler.HandleUserLoginAsync(responseHandler, requestBody);
                     break;
 
+                case "/packages":
+                    await PackageHandler.HandleCreatePackageAsync(responseHandler, requestBody);
+                    break;
+
+                case "/cards":
+                    break;
+
+                case "/deck":
+                    break;
+
+                case "/stats":
+                    break;
+
+                case "/scoreboard":
+                    break;
+
+                case "/tradings":
+                    break;
+
                 default:
                     await responseHandler.SendNotFoundAsync();
                     break;
             }       
         }
+
 
     }
 }
