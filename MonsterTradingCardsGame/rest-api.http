@@ -1,6 +1,5 @@
-﻿# 1) Create Users (Registration)
-
-### Create User: kienboec
+﻿### 1) Create Users (Registration)
+### Create User - kienboec
 POST http://localhost:10001/users
 Content-Type: application/json
 
@@ -9,7 +8,7 @@ Content-Type: application/json
   "Password": "daniel"
 }
 
-### Create User: altenhof
+### Create User - altenhof
 POST http://localhost:10001/users
 Content-Type: application/json
 
@@ -18,7 +17,7 @@ Content-Type: application/json
   "Password": "markus"
 }
 
-### Create User: admin
+### Create User - admin
 POST http://localhost:10001/users
 Content-Type: application/json
 
@@ -27,7 +26,7 @@ Content-Type: application/json
   "Password": "istrator"
 }
 
-### Should fail - User already exists
+### Duplicate User Test (should fail)
 POST http://localhost:10001/users
 Content-Type: application/json
 
@@ -35,8 +34,7 @@ Content-Type: application/json
   "Username": "kienboec",
   "Password": "daniel"
 }
-
-### Should fail - User already exists
+###
 POST http://localhost:10001/users
 Content-Type: application/json
 
@@ -44,11 +42,9 @@ Content-Type: application/json
   "Username": "kienboec",
   "Password": "different"
 }
-
 
 ### 2) Login Users
-
-### Login User: kienboec
+### Login - kienboec
 POST http://localhost:10001/sessions
 Content-Type: application/json
 
@@ -57,7 +53,7 @@ Content-Type: application/json
   "Password": "daniel"
 }
 
-### Login User: altenhof
+### Login - altenhof
 POST http://localhost:10001/sessions
 Content-Type: application/json
 
@@ -66,7 +62,7 @@ Content-Type: application/json
   "Password": "markus"
 }
 
-### Login User: admin
+### Login - admin
 POST http://localhost:10001/sessions
 Content-Type: application/json
 
@@ -75,7 +71,7 @@ Content-Type: application/json
   "Password": "istrator"
 }
 
-### Should fail - Login failed
+### Failed login (should fail)
 POST http://localhost:10001/sessions
 Content-Type: application/json
 
@@ -83,3 +79,138 @@ Content-Type: application/json
   "Username": "kienboec",
   "Password": "different"
 }
+
+### 3) Create Packages (admin)
+POST http://localhost:10001/packages
+Content-Type: application/json
+Authorization: Bearer admin-mtcgToken
+
+[
+  {"Id": "845f0dc7-37d0-426e-994e-43fc3ac83c08", "Name": "WaterGoblin", "Damage": 10.0},
+  {"Id": "99f8f8dc-e25e-4a95-aa2c-782823f36e2a", "Name": "Dragon", "Damage": 50.0},
+  {"Id": "e85e3976-7c86-4d06-9a80-641c2019a79f", "Name": "WaterSpell", "Damage": 20.0},
+  {"Id": "1cb6ab86-bdb2-47e5-b6e4-68c5ab389334", "Name": "Ork", "Damage": 45.0},
+  {"Id": "dfdd758f-649c-40f9-ba3a-8657f4b3439f", "Name": "FireSpell", "Damage": 25.0}
+]
+
+POST http://localhost:10001/packages
+Content-Type: application/json
+Authorization: Bearer admin-mtcgToken
+
+[
+  {"Id": "644808c2-f87a-4600-b313-122b02322fd5", "Name": "WaterGoblin", "Damage": 9.0},
+  {"Id": "4a2757d6-b1c3-47ac-b9a3-91deab093531", "Name": "Dragon", "Damage": 55.0},
+  {"Id": "91a6471b-1426-43f6-ad65-6fc473e16f9f", "Name": "WaterSpell", "Damage": 21.0},
+  {"Id": "4ec8b269-0dfa-4f97-809a-2c63fe2a0025", "Name": "Ork", "Damage": 55.0},
+  {"Id": "f8043c23-1534-4487-b66b-238e0c3c39b5", "Name": "WaterSpell", "Damage": 23.0}
+]
+
+### 4) Acquire Packages - kienboec
+POST http://localhost:10001/transactions/packages
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
+{}
+
+POST http://localhost:10001/transactions/packages
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
+{}
+
+### 5) Acquire Packages - altenhof
+POST http://localhost:10001/transactions/packages
+Content-Type: application/json
+Authorization: Bearer altenhof-mtcgToken
+
+{}
+
+### 6) Show All Acquired Cards
+### View all cards for kienboec
+GET http://localhost:10001/cards
+Authorization: Bearer kienboec-mtcgToken
+
+### View all cards for altenhof
+GET http://localhost:10001/cards
+Authorization: Bearer altenhof-mtcgToken
+
+### 7) Configure Deck
+### Configure deck for kienboec
+PUT http://localhost:10001/deck
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
+["845f0dc7-37d0-426e-994e-43fc3ac83c08", "99f8f8dc-e25e-4a95-aa2c-782823f36e2a", "e85e3976-7c86-4d06-9a80-641c2019a79f", "171f6076-4eb5-4a7d-b3f2-2d650cc3d237"]
+
+### 8) View Configured Deck
+### View deck for kienboec
+GET http://localhost:10001/deck
+Authorization: Bearer kienboec-mtcgToken
+
+### View deck for altenhof
+GET http://localhost:10001/deck
+Authorization: Bearer altenhof-mtcgToken
+
+### 9) Create Trading Deal
+POST http://localhost:10001/tradings
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
+{
+  "Id": "6cd85277-4590-49d4-b0cf-ba0a921faad0",
+  "CardToTrade": "1cb6ab86-bdb2-47e5-b6e4-68c5ab389334",
+  "Type": "monster",
+  "MinimumDamage": 15
+}
+
+### 10) Show Trading Deals
+GET http://localhost:10001/tradings
+Authorization: Bearer kienboec-mtcgToken
+
+### 11) Stats
+### View stats for kienboec
+GET http://localhost:10001/stats
+Authorization: Bearer kienboec-mtcgToken
+
+### View stats for altenhof
+GET http://localhost:10001/stats
+Authorization: Bearer altenhof-mtcgToken
+
+### 12) Scoreboard
+### View scoreboard
+GET http://localhost:10001/scoreboard
+Authorization: Bearer kienboec-mtcgToken
+
+### 13) Battle
+### Initiate battle for kienboec
+POST http://localhost:10001/battles
+Authorization: Bearer kienboec-mtcgToken
+
+### Initiate battle for altenhof
+POST http://localhost:10001/battles
+Authorization: Bearer altenhof-mtcgToken
+
+### 14) Edit User Data
+### Update data for kienboec
+PUT http://localhost:10001/users/kienboec
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
+{
+  "Name": "Kienboeck",
+  "Bio": "me playin...",
+  "Image": ":-)"
+}
+
+### View updated user data for kienboec
+GET http://localhost:10001/users/kienboec
+Authorization: Bearer kienboec-mtcgToken
+
+### 15) Trade with altenhof
+POST http://localhost:10001/tradings/6cd85277-4590-49d4-b0cf-ba0a921faad0
+Content-Type: application/json
+Authorization: Bearer altenhof-mtcgToken
+
+"951e886a-0fbf-425d-8df5-af2ee4830d85"
+
+### End of Requests
