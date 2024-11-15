@@ -41,7 +41,7 @@ namespace MonsterTradingCardsGame.Server
 
                 var (method, path, version) = await HttpRequestParser.ReadRequestLineAsync(reader);
                 var headers = await HttpRequestParser.ReadHeadersAsync(reader);
-                var contentLength = headers.ContainsKey("Content-Length") ? int.Parse(headers["Content-Length"]) : 0;
+                var contentLength = headers.HasKey("Content-Length") ? int.Parse(headers.GetValue("Content-Length")) : 0;
                 var requestBody = await HttpRequestParser.ReadRequestBodyAsync(reader, contentLength);
 
                 Console.WriteLine($"Method: {method}, Path: {path}, Version: {version}");
@@ -52,7 +52,7 @@ namespace MonsterTradingCardsGame.Server
                     //    await HandleGetAsync(writer, path);
                     //    break;
                     case "POST":
-                        await HandlePostAsync(responseHandler, path, requestBody);
+                        await HandlePostAsync(responseHandler, path, headers, requestBody);
                         break;
                     //case "PUT":
                     //    await HandlePutAsync(writer, path, requestBody);
@@ -76,7 +76,7 @@ namespace MonsterTradingCardsGame.Server
             }
         }
 
-        private static async Task HandlePostAsync(HttpResponseHandler responseHandler, string path, string requestBody)
+        private static async Task HandlePostAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
         {
             // ToDo: Dictionary für paths
 
@@ -91,7 +91,7 @@ namespace MonsterTradingCardsGame.Server
                     break;
 
                 case "/packages":
-                    await PackageHandler.HandleCreatePackageAsync(responseHandler, requestBody);
+                    await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody);
                     break;
 
                 case "/cards":

@@ -65,17 +65,20 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(user.Token) && TokenService.IsValidToken(user.Username, user.Token))
+                if (TokenService.HasUserToken(user.Username))
                 {
+                    string token = TokenService.GetTokenByUsername(user.Username);
+
                     Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
-                    await responseHandler.SendOkAsync(new { user.Token });
+                    await responseHandler.SendOkAsync(new { token });
                     return;
                 }
 
-                user.Token = TokenService.GenerateToken(user.Username);
+                TokenService.GenerateToken(user.Username);
+                string newToken = TokenService.GetTokenByUsername(user.Username);
 
                 Console.WriteLine($"User {loginUser.Username} logged in successfully.");
-                await responseHandler.SendOkAsync(new { user.Token });
+                await responseHandler.SendOkAsync(new { newToken });
 
             }
             catch (JsonException)

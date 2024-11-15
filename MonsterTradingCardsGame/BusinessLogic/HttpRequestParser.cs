@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,15 +17,15 @@ namespace MonsterTradingCardsGame.BusinessLogic
             return (httpParts[0], httpParts[1], httpParts[2]);
         }
 
-        public static async Task<Dictionary<string, string>> ReadHeadersAsync(StreamReader reader)
+        public static async Task<Headers> ReadHeadersAsync(StreamReader reader)
         {
-            var headers = new Dictionary<string, string>();
+            var headers = new Headers();
             string? line;
 
             while (!string.IsNullOrWhiteSpace(line = await reader.ReadLineAsync()))
             {
                 var headerParts = line.Split(':');
-                headers[headerParts[0]] = headerParts[1].Trim();
+                headers.AddHeader(headerParts[0], headerParts[1].Trim());
             }
 
             return headers;
@@ -38,5 +39,25 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await reader.ReadBlockAsync(buffer, 0, contentLength);
             return new string(buffer);
         }
+
+        public static string? ReadAuthorizationHeader(Headers headers)
+        {
+            const string AuthorizationHeaderKey = "Authorization";
+            const string BearerPrefix = "Bearer";
+
+            string? authorizationHeaderValue = headers.GetValue(AuthorizationHeaderKey);
+
+            if(authorizationHeaderValue == null)
+            {
+                return null;
+            }
+
+            if (!authorizationHeaderValue.StartsWith(BearerPrefix))
+            {
+                return null;
+            }
+
+            return authorizationHeaderValue.Substring(BearerPrefix.Length);          
+        } 
     }
 }
