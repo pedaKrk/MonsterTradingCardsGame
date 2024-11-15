@@ -32,14 +32,8 @@ namespace MonsterTradingCardsGame.Models
         public string Name { get { return _name; } }
         public Element Element { get { return _element; } }
 
-        private CardType DetermineCardType(string name)
-        {
-            return name.Contains("Spell")
-                ? CardType.SpellCard
-                : CardType.MonsterCard;
-        }
 
-        private static Element DetermineElement(string name)
+        private Element DetermineElement(string name)
         {
             if (name.Contains("Fire"))
                 return Element.Fire;
@@ -47,6 +41,12 @@ namespace MonsterTradingCardsGame.Models
                 return Element.Water;
 
             return Element.Normal;
+        }
+        private CardType DetermineCardType(string name)
+        {
+            return name.Contains("Spell")
+                ? CardType.SpellCard
+                : CardType.MonsterCard;
         }
 
         public override string ToString()
