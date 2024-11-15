@@ -6,25 +6,38 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal abstract class Card
+    internal class Card
     {
-        protected readonly int _damage;
+        private readonly int _id;
 
-        protected readonly string _name;
+        private readonly int _damage;
 
-        protected readonly CardType _element;
+        private readonly string _name;
 
-        public Card(int damage, string name, CardType element)
+        private readonly Element _element;
+
+        private readonly CardType _cardType;
+
+        public Card(int id, int damage, string name, Element element)
         {
+            _id = id;
             _damage = damage;
             _name = name;
             _element = element;
+            _cardType = DetermineCardType(name);
         }
 
+        public int Id { get { return _id; } }
         public int Damage { get { return _damage; } }
         public string Name { get { return _name; } }
-        public CardType Element { get { return _element; } }
+        public Element Element { get { return _element; } }
 
-        public abstract string ToString();
+        private CardType DetermineCardType(string name)
+        {
+            return name.Contains("Spell", StringComparison.OrdinalIgnoreCase)
+                ? CardType.SpellCard
+                : CardType.MonsterCard;
+        }
+
     }
 }
