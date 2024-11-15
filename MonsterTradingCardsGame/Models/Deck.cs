@@ -21,7 +21,7 @@ namespace MonsterTradingCardsGame.Models
 
         public void AddCard(Card card)
         {
-            if (_cards.Count > DeckSize)
+            if (_cards.Count >= DeckSize)
             {
                 Console.WriteLine("Deck is full!");
                 return;
@@ -32,7 +32,7 @@ namespace MonsterTradingCardsGame.Models
 
         public void RemoveCard(int index)
         {
-            if (IsValidIndex(index))
+            if (!IsValidIndex(index))
             {
                 Console.WriteLine("Illegal index!");
                 return;
@@ -46,31 +46,9 @@ namespace MonsterTradingCardsGame.Models
             _cards.Remove(card);
         }
 
-        public Card? GetCard(int index)
-        {
-            if (IsValidIndex(index))
-            {
-                Console.WriteLine("Illegal index!");
-                return null;
-            }
-
-            return _cards[index];
-        }
-
-        public void SwapCard(Card oldCard, Card newCard)
-        {
-            RemoveCard(oldCard);
-            AddCard(newCard);
-        }
-
         private bool IsValidIndex(int index)
         {
-            if (index < 0 || index >= _cards.Count)
-            {
-                return false;
-            }
-
-            return true;
+            return index >= 0 && index < _cards.Count;
         }
 
         public override string ToString()
