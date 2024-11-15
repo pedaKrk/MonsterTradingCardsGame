@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Models;
+﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,10 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 return;
             }
 
-            foreach(Card card in cards)
-            {
-                Console.WriteLine($"card: {card.ToString()}");
-            }
+            Package package = new Package(cards);
+            InMemoryDatabase.AddPackage(package);
 
+            await responseHandler.SendCreatedResponseAsync();
         }
 
         public static async Task HandleAcquirePackageAsync(HttpResponseHandler responseHandler, string requestBody)

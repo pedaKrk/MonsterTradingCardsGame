@@ -11,6 +11,7 @@ namespace MonsterTradingCardsGame.Database
     {
         public static List<User> Users { get; } = new List<User>();
         public static List<Card> Cards { get; } = new List<Card>();
+        public static List<Package> Packages { get; } = new List<Package>();
 
         public static void AddUser(User user)
         {
@@ -20,6 +21,11 @@ namespace MonsterTradingCardsGame.Database
         public static bool UserExists(string username)
         {
             return Users.Any(u => u.Username == username);
+        }
+
+        public static void AddPackage(Package package)
+        {
+            Packages.Add(package);
         }
     }
 }
