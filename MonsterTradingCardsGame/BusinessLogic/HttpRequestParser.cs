@@ -45,7 +45,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
             const string AuthorizationHeaderKey = "Authorization";
             const string BearerPrefix = "Bearer";
 
-            string? authorizationHeaderValue = headers.GetValue(AuthorizationHeaderKey);
+            string? authorizationHeaderValue = headers.GetValue(AuthorizationHeaderKey).Trim();
 
             if(authorizationHeaderValue == null)
             {
@@ -57,7 +57,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 return null;
             }
 
-            return authorizationHeaderValue.Substring(BearerPrefix.Length);          
+            return authorizationHeaderValue[BearerPrefix.Length..].Trim();          
         } 
     }
 }

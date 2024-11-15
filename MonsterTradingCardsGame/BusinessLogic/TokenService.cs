@@ -38,6 +38,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
         {
             foreach (var value in _userTokens.Values)
             {
+                Console.WriteLine($"{value}: {token}");
                 if (value == token)
                 {
                     return true;
@@ -55,7 +56,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
         public static string? GetToken(string token)
         {
-            foreach(var value in _userTokens.Values)
+            foreach(string value in _userTokens.Values)
             {
                 if(value == token)
                 {

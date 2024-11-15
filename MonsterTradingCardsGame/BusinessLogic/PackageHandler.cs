@@ -17,16 +17,18 @@ namespace MonsterTradingCardsGame.BusinessLogic
             try
             {
                 string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
+                //authorizationToken hat am Anfang leerzeicehn!
+                Console.WriteLine($"token: {authorizationToken}");
                 if (authorizationToken == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                string? token = TokenService.GetToken(authorizationToken);
-                if (token == null) 
+                if (!TokenService.HasToken(authorizationToken)) 
                 {
                     await responseHandler.SendUnauthorizedAsync();
+                    return;
                 }
 
                 var cards = JsonSerializer.Deserialize<List<Card>>(requestBody);
