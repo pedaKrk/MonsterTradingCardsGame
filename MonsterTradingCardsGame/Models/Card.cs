@@ -8,9 +8,9 @@ namespace MonsterTradingCardsGame.Models
 {
     internal class Card
     {
-        private readonly int _id;
+        private readonly string _id;
 
-        private readonly int _damage;
+        private readonly double _damage;
 
         private readonly string _name;
 
@@ -18,25 +18,40 @@ namespace MonsterTradingCardsGame.Models
 
         private readonly CardType _cardType;
 
-        public Card(int id, int damage, string name, Element element)
+        public Card(string id, string name, double damage)
         {
             _id = id;
-            _damage = damage;
             _name = name;
-            _element = element;
+            _damage = damage;
+            _element = DetermineElement(name);
             _cardType = DetermineCardType(name);
         }
 
-        public int Id { get { return _id; } }
-        public int Damage { get { return _damage; } }
+        public string Id { get { return _id; } }
+        public double Damage { get { return _damage; } }
         public string Name { get { return _name; } }
         public Element Element { get { return _element; } }
 
         private CardType DetermineCardType(string name)
         {
-            return name.Contains("Spell", StringComparison.OrdinalIgnoreCase)
+            return name.Contains("Spell")
                 ? CardType.SpellCard
                 : CardType.MonsterCard;
+        }
+
+        private static Element DetermineElement(string name)
+        {
+            if (name.Contains("Fire"))
+                return Element.Fire;
+            if (name.Contains("Water"))
+                return Element.Water;
+
+            return Element.Normal;
+        }
+
+        public override string ToString()
+        {
+            return $"[{_cardType} Card] Id: {_id}, Name: {Name}, Damage: {Damage}, Element: {Element}";
         }
 
     }
