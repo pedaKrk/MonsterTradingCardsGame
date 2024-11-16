@@ -17,7 +17,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
             try
             {
                 string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-                //authorizationToken hat am Anfang leerzeicehn!
+
                 Console.WriteLine($"token: {authorizationToken}");
                 if (authorizationToken == null)
                 {
@@ -49,8 +49,63 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
         }
 
-        public static async Task HandleAcquirePackageAsync(HttpResponseHandler responseHandler, string requestBody)
+        public static async Task HandleAcquirePackageAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody)
         {
+            try
+            {
+                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
+
+                Console.WriteLine($"token: {authorizationToken}");
+                if (authorizationToken == null)
+                {
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                if (!TokenService.HasToken(authorizationToken))
+                {
+                    await responseHandler.SendUnauthorizedAsync();
+                    return;
+                }
+
+                string? username = TokenService.GetUsernameByToken(authorizationToken);
+
+                if (username == null)
+                {
+                    await responseHandler.SendUnauthorizedAsync();
+                    return;
+                }
+
+                var user = InMemoryDatabase.GetUser(username);
+
+                if (user == null) 
+                { 
+                    await responseHandler.SendUnauthorizedAsync();
+                    return;
+                }
+
+                if(user.Coins - 5 < 0)
+                {
+                    //#403 response not enough money
+                    return;
+                }
+                
+                Package? package = InMemoryDatabase.AcquirePackage();
+                if (package == null)
+                {
+                    //#5xx no packages
+                    return;
+                }
+
+                user.Coins -= 5;
+                user.AddCards(package.Open());
+
+                await responseHandler.SendOkAsync();
+            }
+            catch (JsonException)
+            {
+                await responseHandler.SendBadRequestAsync();
+            }
 
         }
 

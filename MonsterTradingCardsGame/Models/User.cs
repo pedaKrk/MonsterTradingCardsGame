@@ -29,5 +29,15 @@ namespace MonsterTradingCardsGame.Models
 
             Coins = 20;
         }
+
+        public void AddCards(List<Card> cards) 
+        { 
+            _stack.AddCards(cards);
+        }
+
+        public List<Card> GetStack() 
+        {
+            return _stack.GetStack();
+        }
     }
 }

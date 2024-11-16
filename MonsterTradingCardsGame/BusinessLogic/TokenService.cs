@@ -66,5 +66,18 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
             return null;
         }
+
+        public static string? GetUsernameByToken(string token)
+        {
+            foreach (var entry in _userTokens)
+            {
+                if (entry.Value == token)
+                {
+                    return entry.Key;
+                }
+            }
+
+            return null;
+        }
     }
 }

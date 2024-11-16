@@ -18,6 +18,18 @@ namespace MonsterTradingCardsGame.Database
             Users.Add(user);
         }
 
+        public static User? GetUser(string username)
+        {
+            foreach (User user in Users)
+            {
+                if (user.Username == username)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
         public static bool UserExists(string username)
         {
             return Users.Any(u => u.Username == username);
@@ -26,6 +38,19 @@ namespace MonsterTradingCardsGame.Database
         public static void AddPackage(Package package)
         {
             Packages.Add(package);
+        }
+
+        public static Package? AcquirePackage()
+        {
+            Package? package = Packages.FirstOrDefault();
+            if (package == null) 
+            {
+                return null;
+            }
+
+            Packages.RemoveAt(0);
+
+            return package;
         }
     }
 }

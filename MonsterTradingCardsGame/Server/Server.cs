@@ -48,9 +48,9 @@ namespace MonsterTradingCardsGame.Server
 
                 switch (method.ToUpper())
                 {
-                    //case "GET":
-                    //    await HandleGetAsync(writer, path);
-                    //    break;
+                    case "GET":
+                        await HandleGetAsync(responseHandler, path, headers, requestBody);
+                        break;
                     case "POST":
                         await HandlePostAsync(responseHandler, path, headers, requestBody);
                         break;
@@ -79,6 +79,7 @@ namespace MonsterTradingCardsGame.Server
         private static async Task HandlePostAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
         {
             // ToDo: Dictionary für paths
+            Console.WriteLine(path);
 
             switch (path)
             {
@@ -92,6 +93,10 @@ namespace MonsterTradingCardsGame.Server
 
                 case "/packages":
                     await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody);
+                    break;
+
+                case "/transactions/packages":
+                    await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody);
                     break;
 
                 case "/cards":
@@ -115,7 +120,20 @@ namespace MonsterTradingCardsGame.Server
             }       
         }
 
+        private static async Task HandleGetAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
+        {
+            switch (path)
+            {
+                case "/cards":
+                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers, requestBody);
+                    break;
 
-    }
+                default:
+                    await responseHandler.SendNotFoundAsync();
+                    break;
+            }
+        }
+
+        }
 }
 
