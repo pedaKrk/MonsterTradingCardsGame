@@ -46,6 +46,11 @@ namespace MonsterTradingCardsGame.Models
             _cards.Remove(card);
         }
 
+        public List<Card> GetCards()
+        {
+            return new List<Card>(_cards);
+        }
+
         private bool IsValidIndex(int index)
         {
             return index >= 0 && index < _cards.Count;

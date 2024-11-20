@@ -8,36 +8,21 @@ namespace MonsterTradingCardsGame.Models
 {
     internal class User
     {
-
-        public string Username { get; private set;  }
-        public string Password { get; private set; }
+        public string Username { get; }
+        public string Password { get; }
         public int Id { get; set; }
         public int Coins { get; set; }
 
-        private readonly Stack _stack;
+        public Stack Stack { get; } = new Stack();
+        public Deck Deck { get; } = new Deck();
 
-        private readonly Deck _deck;
-
-        public string? Token {  get; set; }
 
         public User(string username, string password)
         {
             Username = username;
             Password = password;
-            _stack = new Stack();
-            _deck = new Deck();
 
             Coins = 20;
-        }
-
-        public void AddCards(List<Card> cards) 
-        { 
-            _stack.AddCards(cards);
-        }
-
-        public List<Card> GetStack() 
-        {
-            return _stack.GetStack();
         }
     }
 }

@@ -15,8 +15,6 @@ namespace MonsterTradingCardsGame.Models
             _stack = new List<Card>();
         }
 
-        public int Count { get { return _stack.Count; } }
-
         public void AddCard(Card card)
         {
             _stack.Add(card);
@@ -40,7 +38,19 @@ namespace MonsterTradingCardsGame.Models
             return _stack[index];
         }
 
-        public List<Card> GetStack()
+        public Card? GetCardById(string id)
+        {
+            foreach (Card card in _stack)
+            {
+                if (card.Id == id)
+                {
+                    return card;
+                }
+            }
+            return null;
+        }
+
+        public List<Card> GetAllCards()
         {
             return new List<Card>(_stack);
         }
