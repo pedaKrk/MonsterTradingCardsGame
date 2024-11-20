@@ -54,9 +54,9 @@ namespace MonsterTradingCardsGame.Server
                     case "POST":
                         await HandlePostAsync(responseHandler, path, headers, requestBody);
                         break;
-                    //case "PUT":
-                    //    await HandlePutAsync(writer, path, requestBody);
-                    //    break;
+                    case "PUT":
+                        await HandlePutAsync(writer, path, requestBody);
+                        break;
                     //case "DELETE":
                     //    await HandleDeleteAsync(writer, path);
                     //    break;
@@ -134,6 +134,20 @@ namespace MonsterTradingCardsGame.Server
             }
         }
 
+        private static async Task HandlePutAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
+        {
+            switch (path)
+            {
+                case "/deck":
+                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers, requestBody);
+                    break;
+
+                default:
+                    await responseHandler.SendNotFoundAsync();
+                    break;
+            }
         }
+
+    }
 }
 
