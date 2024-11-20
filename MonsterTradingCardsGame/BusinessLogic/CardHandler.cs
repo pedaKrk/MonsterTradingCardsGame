@@ -45,7 +45,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                List<Card> cards = user.GetStack();
+                List<Card> cards = user.Stack.GetAllCards();
 
                 if(cards.Count == 0)
                 {

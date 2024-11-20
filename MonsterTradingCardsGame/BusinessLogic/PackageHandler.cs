@@ -55,7 +55,6 @@ namespace MonsterTradingCardsGame.BusinessLogic
             {
                 string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
 
-                Console.WriteLine($"token: {authorizationToken}");
                 if (authorizationToken == null)
                 {
                     await responseHandler.SendBadRequestAsync();
@@ -98,7 +97,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 }
 
                 user.Coins -= 5;
-                user.AddCards(package.Open());
+                user.Stack.AddCards(package.Open());
 
                 await responseHandler.SendOkAsync();
             }

@@ -3,6 +3,7 @@ using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -86,6 +87,24 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 await responseHandler.SendBadRequestAsync();
             }
 
+        }
+
+        public static async Task<bool> IsUserLoggedInAsync(string? authorizationToken, HttpResponseHandler responseHandler)
+        {
+            //refactor
+            if (authorizationToken == null)
+            {
+                await responseHandler.SendBadRequestAsync();
+                return false;
+            }
+
+            if (!TokenService.HasToken(authorizationToken))
+            {
+                await responseHandler.SendUnauthorizedAsync();
+                return false;
+            }
+
+            return true;
         }
     }
 }
