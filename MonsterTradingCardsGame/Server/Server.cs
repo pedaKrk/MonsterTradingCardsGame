@@ -16,7 +16,27 @@ namespace MonsterTradingCardsGame.Server
     {
 
         private static int _port = 10001;
-        
+
+        // Routing dictionaries
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _postRoutes = new()
+        {
+            { "/users", async (path, headers, body, responseHandler) => await UserHandler.HandleUserRegistrationAsync(responseHandler, body) },
+            { "/sessions", async (path, headers, body, responseHandler) => await UserHandler.HandleUserLoginAsync(responseHandler, body) },
+            { "/packages", async (path, headers, body, responseHandler) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, body) },
+            { "/transactions/packages", async (path, responseHandler, body, handler) => await PackageHandler.HandleAcquirePackageAsync(handler, responseHandler, body) }
+        };
+
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _getRoutes = new()
+        {
+            { "/cards", async (path, headers, body, responseHandler) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
+            { "/deck", async (path, headers, body, responseHandler) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) }
+        };
+
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _putRoutes = new()
+        {
+            { "/deck", async (path, headers, body, responseHandler) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, body) }
+        };
+
         public static void Run()
         {
             Console.WriteLine($"HttpServer-Demo: use http://localhost:{_port}/");
@@ -46,25 +66,7 @@ namespace MonsterTradingCardsGame.Server
 
                 Console.WriteLine($"Method: {method}, Path: {path}, Version: {version}");
 
-                switch (method.ToUpper())
-                {
-                    case "GET":
-                        await HandleGetAsync(responseHandler, path, headers, requestBody);
-                        break;
-                    case "POST":
-                        await HandlePostAsync(responseHandler, path, headers, requestBody);
-                        break;
-                    case "PUT":
-                        await HandlePutAsync(responseHandler, path, headers, requestBody);
-                        break;
-                    //case "DELETE":
-                    //    await HandleDeleteAsync(writer, path);
-                    //    break;
-                    default:
-                        await responseHandler.SendNotFoundAsync();
-                        break;
-                }
-
+                await RouteRequestAsync(method, path, headers, requestBody, responseHandler);
             }
             catch (Exception ex)
             {
@@ -76,75 +78,32 @@ namespace MonsterTradingCardsGame.Server
             }
         }
 
-        private static async Task HandlePostAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
+        private static async Task RouteRequestAsync(string method, string path, Headers headers, string requestBody, HttpResponseHandler responseHandler)
         {
-            // ToDo: Dictionary für paths
-            Console.WriteLine(path);
-
-            switch (path)
+            // Use dictionaries for routing
+            Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>>? methodRoutes = method switch
             {
-                case "/users":
-                    await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody);
-                    break;
+                "POST" => _postRoutes,
+                "GET" => _getRoutes,
+                "PUT" => _putRoutes,
+                _ => null
+            };
 
-                case "/sessions":
-                    await UserHandler.HandleUserLoginAsync(responseHandler, requestBody);
-                    break;
-
-                case "/packages":
-                    await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody);
-                    break;
-
-                case "/transactions/packages":
-                    await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody);
-                    break;
-
-                case "/stats":
-                    break;
-
-                case "/scoreboard":
-                    break;
-
-                case "/tradings":
-                    break;
-
-                default:
-                    await responseHandler.SendNotFoundAsync();
-                    break;
-            }       
-        }
-
-        private static async Task HandleGetAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
-        {
-            switch (path)
+            if (methodRoutes == null)
             {
-                case "/cards":
-                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers);
-                    break;
-                case "/deck":
-                    await DeckHandler.HandleGetDeckAsync(responseHandler, headers);
-                    break;
-
-                default:
-                    await responseHandler.SendNotFoundAsync();
-                    break;
+                await responseHandler.SendNotFoundAsync();
+                return;
             }
-        }
 
-        private static async Task HandlePutAsync(HttpResponseHandler responseHandler, string path, Headers headers, string requestBody)
-        {
-            switch (path)
+            var handler = methodRoutes[path];
+            if (handler == null) 
             {
-                case "/deck":
-                    await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody);
-                    break;
-
-                default:
-                    await responseHandler.SendNotFoundAsync();
-                    break;
+                await responseHandler.SendNotFoundAsync();
+                return;
             }
-        }
 
+            await handler(path, headers, requestBody, responseHandler); 
+        }
     }
 }
 
