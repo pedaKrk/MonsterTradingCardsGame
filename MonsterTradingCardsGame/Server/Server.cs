@@ -37,6 +37,10 @@ namespace MonsterTradingCardsGame.Server
             { "/deck", async (path, headers, body, responseHandler) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, body) }
         };
 
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _deleteRoutes = new()
+        {
+        };
+
         public static void Run()
         {
             Console.WriteLine($"HttpServer-Demo: use http://localhost:{_port}/");
@@ -86,6 +90,7 @@ namespace MonsterTradingCardsGame.Server
                 "POST" => _postRoutes,
                 "GET" => _getRoutes,
                 "PUT" => _putRoutes,
+                "DELETE" => _deleteRoutes,
                 _ => null
             };
 
