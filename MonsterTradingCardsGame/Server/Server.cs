@@ -55,7 +55,7 @@ namespace MonsterTradingCardsGame.Server
                         await HandlePostAsync(responseHandler, path, headers, requestBody);
                         break;
                     case "PUT":
-                        await HandlePutAsync(writer, path, requestBody);
+                        await HandlePutAsync(responseHandler, path, headers, requestBody);
                         break;
                     //case "DELETE":
                     //    await HandleDeleteAsync(writer, path);
@@ -99,12 +99,6 @@ namespace MonsterTradingCardsGame.Server
                     await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody);
                     break;
 
-                case "/cards":
-                    break;
-
-                case "/deck":
-                    break;
-
                 case "/stats":
                     break;
 
@@ -125,7 +119,10 @@ namespace MonsterTradingCardsGame.Server
             switch (path)
             {
                 case "/cards":
-                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers, requestBody);
+                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers);
+                    break;
+                case "/deck":
+                    await DeckHandler.HandleGetDeckAsync(responseHandler, headers);
                     break;
 
                 default:
@@ -139,7 +136,7 @@ namespace MonsterTradingCardsGame.Server
             switch (path)
             {
                 case "/deck":
-                    await CardHandler.HandleGetAllCardsAsync(responseHandler, headers, requestBody);
+                    await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody);
                     break;
 
                 default:

@@ -16,18 +16,15 @@ namespace MonsterTradingCardsGame.BusinessLogic
         {
             try
             {
-                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-
-                Console.WriteLine($"token: {authorizationToken}");
-                if (authorizationToken == null)
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (user == null)
                 {
-                    await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                if (!TokenService.HasToken(authorizationToken)) 
+                if (user.Role != Role.Admin)
                 {
-                    await responseHandler.SendUnauthorizedAsync();
+                    await responseHandler.SendForbiddenAsync(new {message = "provided user is not admin!" });
                     return;
                 }
 
@@ -37,6 +34,10 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
+
+                //--error--
+                //'409':
+                //description: At least one card in the packages already exists
 
                 Package package = new Package(cards);
                 InMemoryDatabase.AddPackage(package);
@@ -53,46 +54,22 @@ namespace MonsterTradingCardsGame.BusinessLogic
         {
             try
             {
-                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-
-                if (authorizationToken == null)
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (user == null)
                 {
-                    await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                if (!TokenService.HasToken(authorizationToken))
+                if (user.Coins - 5 < 0)
                 {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                string? username = TokenService.GetUsernameByToken(authorizationToken);
-
-                if (username == null)
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                var user = InMemoryDatabase.GetUser(username);
-
-                if (user == null) 
-                { 
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                if(user.Coins - 5 < 0)
-                {
-                    //#403 response not enough money
+                    await responseHandler.SendForbiddenAsync(new { error = "not enough money to acquire a package!" });
                     return;
                 }
                 
                 Package? package = InMemoryDatabase.AcquirePackage();
                 if (package == null)
                 {
-                    //#5xx no packages
+                    await responseHandler.SendNotFoundAsync();
                     return;
                 }
 

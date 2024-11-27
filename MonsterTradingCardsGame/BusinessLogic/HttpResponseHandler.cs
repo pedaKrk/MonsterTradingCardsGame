@@ -54,9 +54,9 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await SendResponseAsync("201 Created", null, null);
         }
 
-        public async Task SendConflictResponseAsync()
+        public async Task SendNoContentAsync()
         {
-            await SendResponseAsync("409 Conflict", null, null);
+            await SendResponseAsync("204 No Content", null, null);
         }
 
         public async Task SendBadRequestAsync()
@@ -69,9 +69,26 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await SendResponseAsync("401 Unauthorized", null, null);
         }
 
+        public async Task SendForbiddenAsync(object? responseBody = null)
+        {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("403 Forbidden", "application/json", jsonResponse);
+                return;
+            }
+
+            await SendResponseAsync("403 Forbidden", null, null);
+        }
+
         public async Task SendNotFoundAsync()
         {
             await SendResponseAsync("404 Not Found", null, null);
+        }
+
+        public async Task SendConflictResponseAsync()
+        {
+            await SendResponseAsync("409 Conflict", null, null);
         }
 
         public async Task SendInternalServerErrorAsync()

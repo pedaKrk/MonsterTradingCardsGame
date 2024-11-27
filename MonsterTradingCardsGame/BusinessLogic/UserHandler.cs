@@ -88,23 +88,5 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
 
         }
-
-        public static async Task<bool> IsUserLoggedInAsync(string? authorizationToken, HttpResponseHandler responseHandler)
-        {
-            //refactor
-            if (authorizationToken == null)
-            {
-                await responseHandler.SendBadRequestAsync();
-                return false;
-            }
-
-            if (!TokenService.HasToken(authorizationToken))
-            {
-                await responseHandler.SendUnauthorizedAsync();
-                return false;
-            }
-
-            return true;
-        }
     }
 }

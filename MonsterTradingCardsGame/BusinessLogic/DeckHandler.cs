@@ -15,33 +15,9 @@ namespace MonsterTradingCardsGame.BusinessLogic
         {
             try
             {
-                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-
-                if (authorizationToken == null)
-                {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
-                }
-
-                if (!TokenService.HasToken(authorizationToken))
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                string? username = TokenService.GetUsernameByToken(authorizationToken);
-
-                if (username == null)
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                var user = InMemoryDatabase.GetUser(username);
-
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
                 if (user == null)
                 {
-                    await responseHandler.SendUnauthorizedAsync();
                     return;
                 }
 
@@ -53,19 +29,24 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
+                if (CardIds.Count != 4)
+                {
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
                 foreach (var CardId in CardIds) 
                 {
                     Card? card = user.Stack.GetCardById(CardId);
 
                     if(card == null)
                     {
-                        // wrong id in requestBody
+                        await responseHandler.SendForbiddenAsync(new {error = "At least one of the provided cards does not belong to the user or is not available." });
                         return;
                     }
                     
                     user.Deck.AddCard(card);
                 }
-
 
                 await responseHandler.SendOkAsync();
             }
@@ -73,44 +54,25 @@ namespace MonsterTradingCardsGame.BusinessLogic
             {
                 await responseHandler.SendBadRequestAsync();
             }
-
         }
 
-        public static async Task HandleGetDeckAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody)
+        public static async Task HandleGetDeckAsync(HttpResponseHandler responseHandler, Headers headers)
         {
             try
             {
-                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-
-                if (authorizationToken == null)
-                {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
-                }
-
-                if (!TokenService.HasToken(authorizationToken))
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                string? username = TokenService.GetUsernameByToken(authorizationToken);
-
-                if (username == null)
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                var user = InMemoryDatabase.GetUser(username);
-
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
                 if (user == null)
                 {
-                    await responseHandler.SendUnauthorizedAsync();
                     return;
                 }
 
                 var cards = user.Deck.GetCards();
+
+                if (cards.Count == 0)
+                {
+                    await responseHandler.SendNoContentAsync();
+                    return;
+                }
 
                 await responseHandler.SendOkAsync(new { cards });
             }
@@ -118,7 +80,6 @@ namespace MonsterTradingCardsGame.BusinessLogic
             {
                 await responseHandler.SendBadRequestAsync();
             }
-
         }
     }
 }

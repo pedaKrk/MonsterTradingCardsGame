@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Models;
+﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,38 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
 
             return authorizationHeaderValue[BearerPrefix.Length..].Trim();          
-        } 
+        }
+
+        public static async Task<User?> AuthenticateAndGetUserAsync(HttpResponseHandler responseHandler, Headers headers)
+        {
+            string? authorizationToken = ReadAuthorizationHeader(headers);
+            if (authorizationToken == null)
+            {
+                await responseHandler.SendBadRequestAsync();
+                return null;
+            }
+
+            if (!TokenService.HasToken(authorizationToken))
+            {
+                await responseHandler.SendUnauthorizedAsync();
+                return null;
+            }
+
+            string? username = TokenService.GetUsernameByToken(authorizationToken);
+            if (username == null)
+            {
+                await responseHandler.SendUnauthorizedAsync();
+                return null;
+            }
+
+            var user = InMemoryDatabase.GetUser(username);
+            if (user == null)
+            {
+                await responseHandler.SendUnauthorizedAsync();
+                return null;
+            }
+
+            return user;
+        }
     }
 }

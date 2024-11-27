@@ -11,37 +11,13 @@ namespace MonsterTradingCardsGame.BusinessLogic
 {
     internal class CardHandler
     {
-        public static async Task HandleGetAllCardsAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody)
+        public static async Task HandleGetAllCardsAsync(HttpResponseHandler responseHandler, Headers headers)
         {
             try
             {
-                string? authorizationToken = HttpRequestParser.ReadAuthorizationHeader(headers);
-                if (authorizationToken == null)
-                {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
-                }
-
-                if (!TokenService.HasToken(authorizationToken))
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                string? username = TokenService.GetUsernameByToken(authorizationToken);
-
-                if (username == null)
-                {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
-                }
-
-                var user = InMemoryDatabase.Users.FirstOrDefault(u => u.Username == username);
-
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
                 if (user == null)
                 {
-                    Console.WriteLine("user == null");
-                    await responseHandler.SendUnauthorizedAsync();
                     return;
                 }
 
@@ -49,7 +25,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 if(cards.Count == 0)
                 {
-                    //#204 user has no cards
+                    await responseHandler.SendNoContentAsync();
                     return;
                 }
 
