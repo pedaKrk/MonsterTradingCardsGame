@@ -15,7 +15,7 @@ namespace MonsterTradingCardsGame.Server
     internal class Server
     {
 
-        private static int _port = 10001;
+        private static readonly int _port = 10001;
 
         private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>> _postRoutes = new()
         {
