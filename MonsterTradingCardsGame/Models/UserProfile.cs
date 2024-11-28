@@ -8,13 +8,13 @@ namespace MonsterTradingCardsGame.Models
 {
     internal class UserProfile
     {
-        public string Name { get; set; } = string.Empty;
-        public string Bio { get; set; } = string.Empty;
-        public string Image { get; set; } = string.Empty;
+        public string? Name { get; set; }
+        public string? Bio { get; set; }
+        public string? Image { get; set; }
 
         public UserProfile() { }
 
-        public UserProfile(UserProfile userProfile)
+        public void Update(UserProfile userProfile)
         {
             Name = userProfile.Name ?? Name;
             Bio = userProfile.Bio ?? Bio;

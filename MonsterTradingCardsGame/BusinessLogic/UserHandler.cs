@@ -151,14 +151,13 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 }
                 */
                 var newUserProfile = JsonSerializer.Deserialize<UserProfile>(requestBody);
-
                 if (newUserProfile == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                user.Profile = newUserProfile;
+                user.Profile.Update(newUserProfile);
 
                 await responseHandler.SendOkAsync();
             }
