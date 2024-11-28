@@ -29,7 +29,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                if (CardIds.Count != 4)
+                if (CardIds.Count != Deck.DeckSize)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
