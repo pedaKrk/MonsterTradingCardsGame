@@ -8,14 +8,9 @@ namespace MonsterTradingCardsGame.Models
 {
     internal class Deck
     {
-        private readonly List<Card> _cards;
+        private readonly List<Card> _cards = [];
 
         public static readonly int DeckSize = 4;
-
-        public Deck()
-        {
-            _cards = new List<Card>(DeckSize);
-        }
 
         public int Count { get { return _cards.Count; } }
 

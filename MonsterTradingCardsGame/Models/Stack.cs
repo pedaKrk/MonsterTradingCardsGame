@@ -8,12 +8,7 @@ namespace MonsterTradingCardsGame.Models
 {
     internal class Stack
     {
-        private List<Card> _stack;
-
-        public Stack()
-        {
-            _stack = new List<Card>();
-        }
+        private readonly List<Card> _stack = [];
 
         public void AddCard(Card card)
         {
