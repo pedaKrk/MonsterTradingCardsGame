@@ -88,5 +88,35 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
 
         }
+
+        public static async Task HandleGetUserAsync(HttpResponseHandler responseHandler, Headers headers, string? userName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userName))
+                {
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                var authorizedUser = HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (authorizedUser == null)
+                {
+                    return;
+                }
+
+                var user = InMemoryDatabase.GetUser(userName);
+                if (user == null) {
+                    await responseHandler.SendNotFoundAsync();
+                    return;
+                }
+
+                await responseHandler.SendOkAsync(new { user });
+            }
+            catch (JsonException)
+            {
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
     }
 }
