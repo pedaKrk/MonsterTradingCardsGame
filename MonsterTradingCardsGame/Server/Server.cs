@@ -17,19 +17,19 @@ namespace MonsterTradingCardsGame.Server
 
         private static int _port = 10001;
 
-        // Routing dictionaries
         private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _postRoutes = new()
         {
-            { "/users", async (path, headers, body, responseHandler) => await UserHandler.HandleUserRegistrationAsync(responseHandler, body) },
-            { "/sessions", async (path, headers, body, responseHandler) => await UserHandler.HandleUserLoginAsync(responseHandler, body) },
-            { "/packages", async (path, headers, body, responseHandler) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, body) },
-            { "/transactions/packages", async (path, responseHandler, body, handler) => await PackageHandler.HandleAcquirePackageAsync(handler, responseHandler, body) }
+            { "/users", async (value, headers, body, responseHandler) => await UserHandler.HandleUserRegistrationAsync(responseHandler, body) },
+            { "/sessions", async (value, headers, body, responseHandler) => await UserHandler.HandleUserLoginAsync(responseHandler, body) },
+            { "/packages", async (value, headers, body, responseHandler) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, body) },
+            { "/transactions/packages", async (value, headers, body, responseHandler) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, body) }
         };
 
         private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _getRoutes = new()
         {
-            { "/cards", async (path, headers, body, responseHandler) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
-            { "/deck", async (path, headers, body, responseHandler) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) }
+            { "/cards", async (value, headers, body, responseHandler) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
+            { "/deck", async (value, headers, body, responseHandler) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
+            //{ "/users", async (value, headers, body, responseHandler) => await UserHandler.GetUserDataAsync(responseHandler, headers, value) } 
         };
 
         private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _putRoutes = new()
@@ -84,7 +84,7 @@ namespace MonsterTradingCardsGame.Server
 
         private static async Task RouteRequestAsync(string method, string path, Headers headers, string requestBody, HttpResponseHandler responseHandler)
         {
-            // Use dictionaries for routing
+
             Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>>? methodRoutes = method switch
             {
                 "POST" => _postRoutes,
@@ -94,21 +94,36 @@ namespace MonsterTradingCardsGame.Server
                 _ => null
             };
 
-            if (methodRoutes == null)
+            (path, string? value) = GetDynamicPath(path);
+
+            Console.WriteLine("path: " + path);
+            Console.WriteLine("value: " + value);
+
+            if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<string, Headers, string, HttpResponseHandler, Task>? handler)) 
             {
-                await responseHandler.SendNotFoundAsync();
+                await handler(path, headers, requestBody, responseHandler);                
                 return;
             }
 
-            var handler = methodRoutes[path];
-            if (handler == null) 
-            {
-                await responseHandler.SendNotFoundAsync();
-                return;
-            }
-
-            await handler(path, headers, requestBody, responseHandler); 
+            await responseHandler.SendNotFoundAsync();
         }
+
+        
+        private static (string, string?) GetDynamicPath(string path)
+        {
+            var parts = path.Split('/');
+
+            //parts[0] is always an empty string
+            //since the path starts with a '/'!
+
+            if (parts.Length > 2)
+            {
+                return ($"/{parts[1]}", parts[2]);
+            }
+
+            return (path, null);
+        }
+        
     }
 }
 
