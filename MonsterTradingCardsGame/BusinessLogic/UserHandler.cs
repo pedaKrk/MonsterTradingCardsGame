@@ -89,7 +89,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
         }
 
-        public static async Task HandleGetUserAsync(HttpResponseHandler responseHandler, Headers headers, string? userName)
+        public static async Task HandleGetUserDataAsync(HttpResponseHandler responseHandler, Headers headers, string? userName)
         {
             try
             {

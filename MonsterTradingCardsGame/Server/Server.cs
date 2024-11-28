@@ -29,7 +29,7 @@ namespace MonsterTradingCardsGame.Server
         {
             { "/cards", async (responseHandler, headers, requestBody, parameter) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
             { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
-            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleGetUserAsync(responseHandler, headers, parameter) } 
+            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameter) } 
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _putRoutes = new()
