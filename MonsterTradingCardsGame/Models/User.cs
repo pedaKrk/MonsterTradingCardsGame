@@ -12,9 +12,7 @@ namespace MonsterTradingCardsGame.Models
         public string Password { get; } = password;
         public int Id { get; set; }
         public int Coins { get; set; } = 20;
-        public string Name { get; set; } = string.Empty;
-        public string Bio {  get; set; } = string.Empty;
-        public string Image { get; set; } = string.Empty;
+        public UserProfile Profile { get; set; } = new UserProfile();
         public Role Role { get; set; } = Role.User;
         public Stack Stack { get; } = new Stack();
         public Deck Deck { get; } = new Deck();

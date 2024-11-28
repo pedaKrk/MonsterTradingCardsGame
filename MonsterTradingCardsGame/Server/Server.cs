@@ -34,7 +34,8 @@ namespace MonsterTradingCardsGame.Server
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _putRoutes = new()
         {
-            { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) }
+            { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) },
+            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameter) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _deleteRoutes = new()

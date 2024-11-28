@@ -89,29 +89,78 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
         }
 
-        public static async Task HandleGetUserDataAsync(HttpResponseHandler responseHandler, Headers headers, string? userName)
+        public static async Task HandleGetUserDataAsync(HttpResponseHandler responseHandler, Headers headers, string? username)
         {
             try
             {
-                if (string.IsNullOrEmpty(userName))
+                if (string.IsNullOrEmpty(username))
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                var authorizedUser = HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                var authorizedUser = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
                 if (authorizedUser == null)
                 {
                     return;
                 }
 
-                var user = InMemoryDatabase.GetUser(userName);
+                var user = InMemoryDatabase.GetUser(username);
                 if (user == null) {
                     await responseHandler.SendNotFoundAsync();
                     return;
                 }
 
                 await responseHandler.SendOkAsync(new { user });
+            }
+            catch (JsonException)
+            {
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
+
+        public static async Task HandleChangeUserDataAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody, string? username)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(username))
+                {
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                var authorizedUser = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (authorizedUser == null)
+                {
+                    return;
+                }
+
+                var user = InMemoryDatabase.GetUser(username);
+                if (user == null)
+                {
+                    await responseHandler.SendNotFoundAsync();
+                    return;
+                }
+
+                //implement RoleService
+                /*
+                if(authorizedUser.Role != Role.Admin && authorizedUser.Username != user.Username)
+                {
+                    await responseHandler.SendUnauthorizedAsync();
+                    return;
+                }
+                */
+                var newUserProfile = JsonSerializer.Deserialize<UserProfile>(requestBody);
+
+                if (newUserProfile == null)
+                {
+                    await responseHandler.SendBadRequestAsync();
+                    return;
+                }
+
+                user.Profile = newUserProfile;
+
+                await responseHandler.SendOkAsync();
             }
             catch (JsonException)
             {
