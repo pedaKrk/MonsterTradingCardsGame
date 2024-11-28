@@ -96,12 +96,8 @@ namespace MonsterTradingCardsGame.Server
 
             (path, string? value) = GetDynamicPath(path);
 
-            Console.WriteLine("path: " + path);
-            Console.WriteLine("value: " + value);
-
             if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<string, Headers, string, HttpResponseHandler, string?, Task>? handler)) 
             {
-                Console.WriteLine("method found");
                 await handler(path, headers, requestBody, responseHandler, value);                
                 return;
             }
