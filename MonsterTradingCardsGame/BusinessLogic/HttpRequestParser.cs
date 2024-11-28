@@ -41,7 +41,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
             return new string(buffer);
         }
 
-        public static string? ReadAuthorizationHeader(Headers headers)
+        private static string? ReadAuthorizationHeader(Headers headers)
         {
             const string AuthorizationHeaderKey = "Authorization";
             const string BearerPrefix = "Bearer";
