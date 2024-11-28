@@ -39,7 +39,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 //'409':
                 //description: At least one card in the packages already exists
 
-                Package package = new Package(cards);
+                var package = new Package(cards);
                 InMemoryDatabase.AddPackage(package);
 
                 await responseHandler.SendCreatedResponseAsync();
@@ -60,7 +60,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                if (user.Coins - 5 < 0)
+                if (user.Coins - Package.Price < 0)
                 {
                     await responseHandler.SendForbiddenAsync(new { error = "not enough money to acquire a package!" });
                     return;
@@ -73,7 +73,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                user.Coins -= 5;
+                user.Coins -= Package.Price;
                 user.Stack.AddCards(package.Open());
 
                 await responseHandler.SendOkAsync();
@@ -82,7 +82,6 @@ namespace MonsterTradingCardsGame.BusinessLogic
             {
                 await responseHandler.SendBadRequestAsync();
             }
-
         }
 
         public static async Task HandleAddPackageAsync(HttpResponseHandler responseHandler, string requestBody)
