@@ -17,27 +17,27 @@ namespace MonsterTradingCardsGame.Server
 
         private static int _port = 10001;
 
-        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _postRoutes = new()
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>> _postRoutes = new()
         {
-            { "/users", async (value, headers, body, responseHandler) => await UserHandler.HandleUserRegistrationAsync(responseHandler, body) },
-            { "/sessions", async (value, headers, body, responseHandler) => await UserHandler.HandleUserLoginAsync(responseHandler, body) },
-            { "/packages", async (value, headers, body, responseHandler) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, body) },
-            { "/transactions/packages", async (value, headers, body, responseHandler) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, body) }
+            { "/users", async (path, headers, body, responseHandler, value) => await UserHandler.HandleUserRegistrationAsync(responseHandler, body) },
+            { "/sessions", async (path, headers, body, responseHandler, value) => await UserHandler.HandleUserLoginAsync(responseHandler, body) },
+            { "/packages", async (path, headers, body, responseHandler, value) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, body) },
+            { "/transactions/packages", async (path, headers, body, responseHandler, value) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, body) }
         };
 
-        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _getRoutes = new()
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>> _getRoutes = new()
         {
-            { "/cards", async (value, headers, body, responseHandler) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
-            { "/deck", async (value, headers, body, responseHandler) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
-            //{ "/users", async (value, headers, body, responseHandler) => await UserHandler.GetUserDataAsync(responseHandler, headers, value) } 
+            { "/cards", async (path, headers, body, responseHandler, value) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
+            { "/deck", async (path, headers, body, responseHandler, value) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
+            { "/users", async (path, headers, body, responseHandler, value) => await UserHandler.HandleGetUserAsync(responseHandler, headers, value) } 
         };
 
-        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _putRoutes = new()
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>> _putRoutes = new()
         {
-            { "/deck", async (path, headers, body, responseHandler) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, body) }
+            { "/deck", async (path, headers, body, responseHandler, value) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, body) }
         };
 
-        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>> _deleteRoutes = new()
+        private static readonly Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>> _deleteRoutes = new()
         {
         };
 
@@ -85,7 +85,7 @@ namespace MonsterTradingCardsGame.Server
         private static async Task RouteRequestAsync(string method, string path, Headers headers, string requestBody, HttpResponseHandler responseHandler)
         {
 
-            Dictionary<string, Func<string, Headers, string, HttpResponseHandler, Task>>? methodRoutes = method switch
+            Dictionary<string, Func<string, Headers, string, HttpResponseHandler, string?, Task>>? methodRoutes = method switch
             {
                 "POST" => _postRoutes,
                 "GET" => _getRoutes,
@@ -99,9 +99,10 @@ namespace MonsterTradingCardsGame.Server
             Console.WriteLine("path: " + path);
             Console.WriteLine("value: " + value);
 
-            if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<string, Headers, string, HttpResponseHandler, Task>? handler)) 
+            if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<string, Headers, string, HttpResponseHandler, string?, Task>? handler)) 
             {
-                await handler(path, headers, requestBody, responseHandler);                
+                Console.WriteLine("method found");
+                await handler(path, headers, requestBody, responseHandler, value);                
                 return;
             }
 
