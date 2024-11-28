@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class Headers(Dictionary<string, string> headers)
+    internal class Headers
     {
-        private readonly Dictionary<string, string> _headers = new(headers);
+        private readonly Dictionary<string, string> _headers;
+
+        public Headers()
+        {
+            _headers = [];
+        }
+
+        public Headers(Dictionary<string, string> headers)
+        {
+            _headers = new Dictionary<string, string>(headers);
+        }
 
         public void AddHeader(string key, string value) 
         { 

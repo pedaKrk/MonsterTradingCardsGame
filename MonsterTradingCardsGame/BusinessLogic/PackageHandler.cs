@@ -83,12 +83,5 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 await responseHandler.SendBadRequestAsync();
             }
         }
-
-        public static async Task HandleAddPackageAsync(HttpResponseHandler responseHandler, string requestBody)
-        {
-
-        }
-
-
     }
 }
