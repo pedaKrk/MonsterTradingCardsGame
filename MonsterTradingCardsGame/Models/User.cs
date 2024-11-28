@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class User(string username, string password)
+    internal class User
     {
-        public string Username { get; } = username;
-        public string Password { get; } = password;
+        public string Username { get; }
+        public string Password { get; }
         public int Id { get; set; }
         public int Coins { get; set; } = 20;
         public UserProfile Profile { get; set; } = new UserProfile();
         public Role Role { get; set; } = Role.User;
         public Stack Stack { get; } = new Stack();
         public Deck Deck { get; } = new Deck();
+
+        public User(string username, string password)
+        {
+            Username = username;
+            Password = password;
+
+            Profile.Name = Username;
+        }
     }
 }
