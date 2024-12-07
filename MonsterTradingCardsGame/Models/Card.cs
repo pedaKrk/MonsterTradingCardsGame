@@ -35,6 +35,7 @@ namespace MonsterTradingCardsGame.Models
 
         private Element DetermineElement(string name)
         {
+            //Pass Type as variable in req
             if (name.Contains("Fire"))
                 return Element.Fire;
             if (name.Contains("Water"))
@@ -44,6 +45,7 @@ namespace MonsterTradingCardsGame.Models
         }
         private CardType DetermineCardType(string name)
         {
+            //Pass Type as variable in req
             return name.Contains("Spell")
                 ? CardType.SpellCard
                 : CardType.MonsterCard;
