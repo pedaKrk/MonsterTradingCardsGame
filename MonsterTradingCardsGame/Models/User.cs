@@ -13,6 +13,7 @@ namespace MonsterTradingCardsGame.Models
         public int Id { get; set; }
         public int Coins { get; set; } = 20;
         public UserProfile Profile { get; set; } = new UserProfile();
+        public UserStats Stats { get; set; }
         public Role Role { get; set; } = Role.User;
         public Stack Stack { get; } = new Stack();
         public Deck Deck { get; } = new Deck();
@@ -23,6 +24,7 @@ namespace MonsterTradingCardsGame.Models
             Password = password;
 
             Profile.Name = Username;
+            Stats = new UserStats(Username);
         }
     }
 }
