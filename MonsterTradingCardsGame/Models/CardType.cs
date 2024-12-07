@@ -8,7 +8,7 @@ namespace MonsterTradingCardsGame.Models
 {
     internal enum CardType
     {
-        MonsterCard,
-        SpellCard
+        Monster,
+        Spell
     }
 }

@@ -448,6 +448,14 @@ components:
           type: number
           format: float
           example: 55.0
+        Element:
+            type: string
+            enum: [Water, Fire, Normal]
+            example: Normal
+        Type:
+            type: string
+            enum: [monster, spell]
+            example: monster
     TradingDeal:
       type: object
       properties:

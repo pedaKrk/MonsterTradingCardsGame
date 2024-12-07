@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic
@@ -22,19 +23,29 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
+                /*
+                 * erst wieder einfuegen, wenn Role System implementiert ist
+                 * 
                 if (user.Role != Role.Admin)
                 {
                     await responseHandler.SendForbiddenAsync(new {message = "provided user is not admin!" });
                     return;
                 }
+                */
 
-                var cards = JsonSerializer.Deserialize<List<Card>>(requestBody);
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var cards = JsonSerializer.Deserialize<List<Card>>(requestBody, options);
                 if (cards == null || cards.Count == 0)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
-
+                
                 //--error--
                 //'409':
                 //description: At least one card in the packages already exists
@@ -44,8 +55,9 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 await responseHandler.SendCreatedResponseAsync();
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
+                Console.WriteLine(ex.Message);
                 await responseHandler.SendBadRequestAsync();
             }
         }
