@@ -12,6 +12,7 @@ namespace MonsterTradingCardsGame.Database
         public static List<User> Users { get; } = new List<User>();
         public static List<Card> Cards { get; } = new List<Card>();
         public static List<Package> Packages { get; } = new List<Package>();
+        public static List<TradingDeal> TradingDeals { get; } = new List<TradingDeal>();
 
         public static void AddUser(User user)
         {
@@ -51,6 +52,16 @@ namespace MonsterTradingCardsGame.Database
             Packages.RemoveAt(0);
 
             return package;
+        }
+
+        public static bool TradingDealExists(string id)
+        {
+            return TradingDeals.Any(t => t.Id == id);
+        }
+
+        public static void AddTradingDeal(TradingDeal deal)
+        {
+            TradingDeals.Add(deal);
         }
     }
 }

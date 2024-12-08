@@ -22,14 +22,16 @@ namespace MonsterTradingCardsGame.Server
             { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody) },
             { "/sessions", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleUserLoginAsync(responseHandler, requestBody) },
             { "/packages", async (responseHandler, headers, requestBody, parameter) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
-            { "/transactions/packages", async (responseHandler, headers, requestBody, parameter) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) }
+            { "/transactions/packages", async (responseHandler, headers, requestBody, parameter) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
+            { "/trades", async (responseHandler, headers, requestBody, parameter) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _getRoutes = new()
         {
             { "/cards", async (responseHandler, headers, requestBody, parameter) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
             { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
-            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameter) } 
+            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameter) },
+            { "/trades", async (responseHandler, headers, requestBody, parameter) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers, requestBody) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _putRoutes = new()
@@ -95,6 +97,7 @@ namespace MonsterTradingCardsGame.Server
                 _ => null
             };
 
+            //fehler mit dynamischen pfaden (transactions/packages) wird als dynamischer pfad bearbeitet
             (path, string? parameter) = GetDynamicPath(path);
 
             if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<HttpResponseHandler, Headers, string, string?, Task>? handler)) 
@@ -103,6 +106,7 @@ namespace MonsterTradingCardsGame.Server
                 return;
             }
 
+            Console.WriteLine("Method not found");
             await responseHandler.SendNotFoundAsync();
         }
 
