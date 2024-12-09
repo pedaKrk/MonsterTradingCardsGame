@@ -17,30 +17,33 @@ namespace MonsterTradingCardsGame.Server
 
         private static readonly int _port = 10001;
 
-        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _postRoutes = new()
+        //ToDo: create deck funktioniert nicht wie geplant
+        //ToDo; tradings funktioniert nicht wie geplant
+
+        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
         {
-            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody) },
-            { "/sessions", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleUserLoginAsync(responseHandler, requestBody) },
-            { "/packages", async (responseHandler, headers, requestBody, parameter) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
-            { "/transactions/packages", async (responseHandler, headers, requestBody, parameter) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
-            { "/trades", async (responseHandler, headers, requestBody, parameter) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) }
+            { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody) },
+            { "/sessions", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleUserLoginAsync(responseHandler, requestBody) },
+            { "/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
+            { "/transactions/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
+            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) }
         };
 
-        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _getRoutes = new()
+        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _getRoutes = new()
         {
-            { "/cards", async (responseHandler, headers, requestBody, parameter) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
-            { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
-            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameter) },
-            { "/trades", async (responseHandler, headers, requestBody, parameter) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers, requestBody) }
+            { "/cards", async (responseHandler, headers, requestBody, parameters) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
+            { "/deck", async (responseHandler, headers, requestBody, parametes) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
+            { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameters["username"]) },
+            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers, requestBody) }
         };
 
-        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _putRoutes = new()
+        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _putRoutes = new()
         {
-            { "/deck", async (responseHandler, headers, requestBody, parameter) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) },
-            { "/users", async (responseHandler, headers, requestBody, parameter) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameter) }
+            { "/deck", async (responseHandler, headers, requestBody, parameters) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) },
+            { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameters["username"]) }
         };
 
-        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>> _deleteRoutes = new()
+        private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _deleteRoutes = new()
         {
         };
 
@@ -88,7 +91,7 @@ namespace MonsterTradingCardsGame.Server
         private static async Task RouteRequestAsync(string method, string path, Headers headers, string requestBody, HttpResponseHandler responseHandler)
         {
 
-            Dictionary<string, Func<HttpResponseHandler, Headers, string, string?, Task>>? methodRoutes = method switch
+            var methodRoutes = method switch
             {
                 "POST" => _postRoutes,
                 "GET" => _getRoutes,
@@ -97,35 +100,63 @@ namespace MonsterTradingCardsGame.Server
                 _ => null
             };
 
-            //fehler mit dynamischen pfaden (transactions/packages) wird als dynamischer pfad bearbeitet
-            (path, string? parameter) = GetDynamicPath(path);
-
-            if (methodRoutes != null && methodRoutes.TryGetValue(path, out Func<HttpResponseHandler, Headers, string, string?, Task>? handler)) 
+            if (methodRoutes == null)
             {
-                await handler(responseHandler, headers, requestBody, parameter);                
+                Console.WriteLine("Unsupported HTTP method");
+                await responseHandler.SendNotFoundAsync();
                 return;
             }
 
-            Console.WriteLine("Method not found");
+            var (matchedRoute, parameters) = MatchPath(path, methodRoutes);
+
+            if (matchedRoute != null && methodRoutes.TryGetValue(matchedRoute, out var handler)) 
+            {
+                await handler(responseHandler, headers, requestBody, parameters);                
+                return;
+            }
+
+            Console.WriteLine($"No route found for Path: {path}");
             await responseHandler.SendNotFoundAsync();
         }
 
-        
-        private static (string, string?) GetDynamicPath(string path)
+        //code von chatgpt
+        //aber es funktioniert
+        private static (string?, Dictionary<string, string>?) MatchPath(
+            string path,
+            Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> routes)
         {
-            var parts = path.Split('/');
-
-            //parts[0] is always an empty string
-            //since the path starts with a '/'!
-
-            if (parts.Length > 2)
+            foreach (var route in routes.Keys)
             {
-                return ($"/{parts[1]}", parts[2]);
+                var routeParts = route.Split('/');
+                var pathParts = path.Split('/');
+
+                if (routeParts.Length != pathParts.Length)
+                    continue;
+
+                var parameters = new Dictionary<string, string>();
+                var isMatch = true;
+
+                for (int i = 0; i < routeParts.Length; i++)
+                {
+                    if (routeParts[i].StartsWith("{") && routeParts[i].EndsWith("}"))
+                    {
+                        var key = routeParts[i].Trim('{', '}');
+                        parameters[key] = pathParts[i];
+                    }
+                    else if (routeParts[i] != pathParts[i])
+                    {
+                        isMatch = false;
+                        break;
+                    }
+                }
+
+                if (isMatch)
+                    return (route, parameters);
             }
 
-            return (path, null);
+            return (null, null);
         }
-        
+
     }
 }
 
