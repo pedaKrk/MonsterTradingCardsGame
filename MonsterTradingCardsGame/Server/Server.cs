@@ -33,14 +33,14 @@ namespace MonsterTradingCardsGame.Server
         {
             { "/cards", async (responseHandler, headers, requestBody, parameters) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
             { "/deck", async (responseHandler, headers, requestBody, parametes) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
-            { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameters["username"]) },
+            { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameters?["username"]) },
             { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers, requestBody) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _putRoutes = new()
         {
             { "/deck", async (responseHandler, headers, requestBody, parameters) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) },
-            { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameters["username"]) }
+            { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameters?["username"]) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _deleteRoutes = new()
