@@ -64,16 +64,14 @@ namespace MonsterTradingCardsGame.Database
             TradingDeals.Add(deal);
         }
 
-        public static bool DeleteTradingDeal(string id)
+        public static TradingDeal? GetTradingDeal(string id)
         {
-            var deal = TradingDeals.FirstOrDefault(d => d.Id == id);
-            if (deal == null)
-            {
-                return false;
-            }
+            return TradingDeals.FirstOrDefault(deal => deal.Id == id);
+        }
 
-            TradingDeals.Remove(deal);
-            return true;   
+        public static void DeleteTradingDeal(string id)
+        {
+            TradingDeals.RemoveAll(d => d.Id == id);
         }
     }
 }

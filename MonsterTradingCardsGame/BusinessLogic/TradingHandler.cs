@@ -110,12 +110,20 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                if (!InMemoryDatabase.DeleteTradingDeal(tradingDealId))
+                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId);
+                if (tradingDeal == null)
                 {
                     await responseHandler.SendNotFoundAsync();
                     return;
                 }
 
+                if (!user.Stack.HasCard(tradingDeal.CardId)) {
+                    await responseHandler.SendForbiddenAsync(new {error = "The deal contains a card that is not owned by the user." });
+                    return;
+                }
+
+                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
+    
                 await responseHandler.SendOkAsync();
             }
             catch (JsonException ex)
