@@ -17,8 +17,11 @@ namespace MonsterTradingCardsGame.Server
 
         private static readonly int _port = 10001;
 
-        //ToDo: create deck funktioniert nicht wie geplant
-        //ToDo; tradings funktioniert nicht wie geplant
+        /*
+         * ToDo: - auf trade eingehen
+         *       - Battle
+         *       - UserStats
+         */
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
         {

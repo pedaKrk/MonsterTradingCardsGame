@@ -37,6 +37,7 @@ namespace MonsterTradingCardsGame.Models
         {
             foreach (Card card in _stack)
             {
+                Console.WriteLine($"{id}: {card.Id}");
                 if (card.Id == id)
                 {
                     return card;

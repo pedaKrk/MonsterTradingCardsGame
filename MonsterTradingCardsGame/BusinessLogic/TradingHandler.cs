@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic
@@ -21,17 +22,25 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                var tradingDeal = JsonSerializer.Deserialize<TradingDeal>(requestbody);
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var tradingDeal = JsonSerializer.Deserialize<TradingDeal>(requestbody, options);
+
                 if(tradingDeal == null) 
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
+                Console.WriteLine(tradingDeal.ToString());
 
                 var card = user.Stack.GetCardById(tradingDeal.CardId);
                 if(card == null)
                 {
-                    await responseHandler.SendForbiddenAsync();
+                    await responseHandler.SendForbiddenAsync(new {error = "the user doesn't own this card."});
                     return;
                 }
 
