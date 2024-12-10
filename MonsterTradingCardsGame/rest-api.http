@@ -216,4 +216,9 @@ Authorization: Bearer altenhof-mtcgToken
 
 "951e886a-0fbf-425d-8df5-af2ee4830d85"
 
+### 16) Delete Trade
+DELETE http://localhost:10001/tradings/6cd85277-4590-49d4-b0cf-ba0a921faad0
+Content-Type: application/json
+Authorization: Bearer kienboec-mtcgToken
+
 ### End of Requests

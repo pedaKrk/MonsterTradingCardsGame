@@ -37,7 +37,7 @@ namespace MonsterTradingCardsGame.Server
             { "/cards", async (responseHandler, headers, requestBody, parameters) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
             { "/deck", async (responseHandler, headers, requestBody, parametes) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
             { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameters?["username"]) },
-            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers, requestBody) }
+            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _putRoutes = new()
@@ -48,6 +48,7 @@ namespace MonsterTradingCardsGame.Server
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _deleteRoutes = new()
         {
+            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleDeleteTradingDealAsync(responseHandler, headers, requestBody, parameters?["tradingdealid"]) }
         };
 
         public static void Run()

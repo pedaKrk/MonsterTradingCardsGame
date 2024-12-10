@@ -50,7 +50,6 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                user.Stack.RemoveCard(card);
                 InMemoryDatabase.AddTradingDeal(tradingDeal);
 
                 await responseHandler.SendCreatedResponseAsync();
@@ -62,7 +61,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
             }
         }
 
-        public static async Task HandleGetTradesAsync(HttpResponseHandler responseHandler, Headers headers, string requestbody)
+        public static async Task HandleGetTradesAsync(HttpResponseHandler responseHandler, Headers headers)
         {
             try
             {
@@ -87,6 +86,37 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 await responseHandler.SendOkAsync(new {tradingDeals});
                                 
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine(ex.Message);
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
+
+        public static async Task HandleDeleteTradingDealAsync(HttpResponseHandler responseHandler, Headers headers, string requestbody, string? tradingDealId)
+        {
+            try
+            {
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (user == null)
+                {
+                    return;
+                }
+
+                if(tradingDealId == null)
+                {
+                    await responseHandler.SendBadRequestAsync( new { error = "tradingDealId is required."});
+                    return;
+                }
+
+                if (!InMemoryDatabase.DeleteTradingDeal(tradingDealId))
+                {
+                    await responseHandler.SendNotFoundAsync();
+                    return;
+                }
+
+                await responseHandler.SendOkAsync();
             }
             catch (JsonException ex)
             {

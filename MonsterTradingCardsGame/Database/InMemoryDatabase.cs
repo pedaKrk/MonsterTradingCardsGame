@@ -56,12 +56,24 @@ namespace MonsterTradingCardsGame.Database
 
         public static bool TradingDealExists(string id)
         {
-            return TradingDeals.Any(t => t.Id == id);
+            return TradingDeals.Any(d => d.Id == id);
         }
 
         public static void AddTradingDeal(TradingDeal deal)
         {
             TradingDeals.Add(deal);
+        }
+
+        public static bool DeleteTradingDeal(string id)
+        {
+            var deal = TradingDeals.FirstOrDefault(d => d.Id == id);
+            if (deal == null)
+            {
+                return false;
+            }
+
+            TradingDeals.Remove(deal);
+            return true;   
         }
     }
 }
