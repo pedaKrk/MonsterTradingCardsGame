@@ -59,8 +59,15 @@ namespace MonsterTradingCardsGame.BusinessLogic
             await SendResponseAsync("204 No Content", null, null);
         }
 
-        public async Task SendBadRequestAsync()
+        public async Task SendBadRequestAsync(object? responseBody = null)
         {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("400 Bad Request", "application/json", jsonResponse);
+                return;
+            }
+
             await SendResponseAsync("400 Bad Request", null, null);
         }
 

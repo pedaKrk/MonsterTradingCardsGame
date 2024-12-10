@@ -21,32 +21,33 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                var CardIds = JsonSerializer.Deserialize<List<string>>(requestBody);
-
-                if(CardIds == null)
+                var cardIds = JsonSerializer.Deserialize<List<string>>(requestBody);
+                if(cardIds == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                if (CardIds.Count != Deck.DeckSize)
+                if (cardIds.Count != Deck.DeckSize)
                 {
-                    await responseHandler.SendBadRequestAsync();
+                    await responseHandler.SendBadRequestAsync(new { error = "The provided deck did not include the required amount of cards" });
                     return;
                 }
 
-                foreach (var CardId in CardIds) 
+                var cards = new List<Card>(Deck.DeckSize);
+                foreach (var cardId in cardIds) 
                 {
-                    Card? card = user.Stack.GetCardById(CardId);
-
+                    Card? card = user.Stack.GetCardById(cardId);
                     if(card == null)
                     {
                         await responseHandler.SendForbiddenAsync(new {error = "At least one of the provided cards does not belong to the user or is not available." });
                         return;
                     }
-                    
-                    user.Deck.AddCard(card);
+
+                    cards.Add(card);
                 }
+
+                user.Deck.AddCards(cards);
 
                 await responseHandler.SendOkAsync();
             }
