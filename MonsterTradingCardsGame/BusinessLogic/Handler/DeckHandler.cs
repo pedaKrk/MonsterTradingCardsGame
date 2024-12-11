@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.BusinessLogic.Http;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Handler
 {
     internal class DeckHandler
     {
@@ -22,7 +23,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 }
 
                 var cardIds = JsonSerializer.Deserialize<List<string>>(requestBody);
-                if(cardIds == null)
+                if (cardIds == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
@@ -35,12 +36,12 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 }
 
                 var cards = new List<Card>(Deck.DeckSize);
-                foreach (var cardId in cardIds) 
+                foreach (var cardId in cardIds)
                 {
                     Card? card = user.Stack.GetCardById(cardId);
-                    if(card == null)
+                    if (card == null)
                     {
-                        await responseHandler.SendForbiddenAsync(new {error = "At least one of the provided cards does not belong to the user or is not available." });
+                        await responseHandler.SendForbiddenAsync(new { error = "At least one of the provided cards does not belong to the user or is not available." });
                         return;
                     }
 

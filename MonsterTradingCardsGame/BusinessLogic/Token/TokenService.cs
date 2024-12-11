@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Token
 {
     internal class TokenService
     {
@@ -18,7 +18,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
         public static bool IsValidToken(string token)
         {
-            foreach (var value in _userTokens.Values) 
+            foreach (var value in _userTokens.Values)
             {
                 if (value == token)
                 {
@@ -47,7 +47,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
             return false;
         }
-        
+
 
         public static string GetTokenByUsername(string username)
         {
@@ -56,9 +56,9 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
         public static string? GetToken(string token)
         {
-            foreach(string value in _userTokens.Values)
+            foreach (string value in _userTokens.Values)
             {
-                if(value == token)
+                if (value == token)
                 {
                     return value;
                 }

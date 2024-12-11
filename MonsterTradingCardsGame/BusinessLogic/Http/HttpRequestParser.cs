@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.BusinessLogic.Token;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Http
 {
     internal class HttpRequestParser
     {
@@ -48,7 +49,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
             string? authorizationHeaderValue = headers.GetValue(AuthorizationHeaderKey).Trim();
 
-            if(authorizationHeaderValue == null)
+            if (authorizationHeaderValue == null)
             {
                 return null;
             }
@@ -58,7 +59,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 return null;
             }
 
-            return authorizationHeaderValue[BearerPrefix.Length..].Trim();          
+            return authorizationHeaderValue[BearerPrefix.Length..].Trim();
         }
 
         public static async Task<User?> AuthenticateAndGetUserAsync(HttpResponseHandler responseHandler, Headers headers)

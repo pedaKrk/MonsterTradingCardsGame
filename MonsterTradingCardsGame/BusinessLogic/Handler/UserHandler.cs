@@ -1,4 +1,6 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.BusinessLogic.Http;
+using MonsterTradingCardsGame.BusinessLogic.Token;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Handler
 {
     internal class UserHandler
     {
@@ -47,7 +49,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
             {
                 Console.WriteLine("Login:\n");
                 var loginUser = JsonSerializer.Deserialize<User>(requestBody);
-               
+
                 Console.WriteLine($"Username: {loginUser?.Username}, Password: {loginUser?.Password}");
 
                 if (string.IsNullOrWhiteSpace(loginUser?.Username) || string.IsNullOrWhiteSpace(loginUser?.Password))
@@ -59,7 +61,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 var user = InMemoryDatabase.Users.FirstOrDefault(u => u.Username == loginUser.Username);
 
-                if (user == null || loginUser.Password != user.Password) 
+                if (user == null || loginUser.Password != user.Password)
                 {
                     Console.WriteLine("User not found or wrong credentials.");
                     await responseHandler.SendUnauthorizedAsync();
@@ -106,7 +108,8 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 }
 
                 var user = InMemoryDatabase.GetUser(username);
-                if (user == null) {
+                if (user == null)
+                {
                     await responseHandler.SendNotFoundAsync();
                     return;
                 }
@@ -176,8 +179,8 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 {
                     return;
                 }
-              
-                await responseHandler.SendOkAsync(new {user.Stats});
+
+                await responseHandler.SendOkAsync(new { user.Stats });
             }
             catch (JsonException)
             {

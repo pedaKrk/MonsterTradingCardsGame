@@ -6,13 +6,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Http
 {
     internal class HttpResponseHandler
     {
         private readonly StreamWriter _writer;
 
-        public HttpResponseHandler(StreamWriter writer) 
+        public HttpResponseHandler(StreamWriter writer)
         {
             _writer = writer;
         }
@@ -45,8 +45,8 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 await SendResponseAsync("200 OK", "application/json", jsonResponse);
                 return;
             }
-            
-            await SendResponseAsync("200 OK", null, null);          
+
+            await SendResponseAsync("200 OK", null, null);
         }
 
         public async Task SendCreatedResponseAsync()

@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.BusinessLogic.Http;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Handler
 {
     internal class PackageHandler
     {
@@ -45,7 +46,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
-                
+
                 //--error--
                 //'409':
                 //description: At least one card in the packages already exists
@@ -77,7 +78,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     await responseHandler.SendForbiddenAsync(new { error = "not enough money to acquire a package!" });
                     return;
                 }
-                
+
                 Package? package = InMemoryDatabase.AcquirePackage();
                 if (package == null)
                 {

@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.BusinessLogic.Http;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic
+namespace MonsterTradingCardsGame.BusinessLogic.Handler
 {
     internal class ScoreboardHandler
     {
