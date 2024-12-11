@@ -18,7 +18,7 @@ namespace MonsterTradingCardsGame.Server
         private static readonly int _port = 10001;
 
         /*
-         * ToDo: - auf trade eingehen
+         * ToDo: - auf trade eingehen (add user that offered the trading deal and remove minDamage and cardType as params)
          *       - Battle
          *       - UserStats
          *       - unique feature marketplace wo cards coins wert sind !!

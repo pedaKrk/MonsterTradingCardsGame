@@ -28,14 +28,14 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     PropertyNameCaseInsensitive = true
                 };
 
-                var tradingDeal = JsonSerializer.Deserialize<TradingDeal>(requestbody, options);
-
-                if(tradingDeal == null) 
+                var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody, options);
+                if (tradingDealDTO == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
-                Console.WriteLine(tradingDeal.ToString());
+
+                var tradingDeal = new TradingDeal(tradingDealDTO.Id, tradingDealDTO.CardId, user.Username ,tradingDealDTO.Price);
 
                 var card = user.Stack.GetCardById(tradingDeal.CardId);
                 if(card == null)
@@ -124,6 +124,45 @@ namespace MonsterTradingCardsGame.BusinessLogic
 
                 InMemoryDatabase.DeleteTradingDeal(tradingDealId);
     
+                await responseHandler.SendOkAsync();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine(ex.Message);
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
+        public static async Task HandleAcceptTradingDealAsync(HttpResponseHandler responseHandler, Headers headers, string requestbody, string? tradingDealId)
+        {
+            try
+            {
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (user == null)
+                {
+                    return;
+                }
+
+                if (tradingDealId == null)
+                {
+                    await responseHandler.SendBadRequestAsync(new { error = "tradingDealId is required." });
+                    return;
+                }
+
+                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId);
+                if (tradingDeal == null)
+                {
+                    await responseHandler.SendNotFoundAsync();
+                    return;
+                }
+
+                if (!user.Stack.HasCard(tradingDeal.CardId))
+                {
+                    await responseHandler.SendForbiddenAsync(new { error = "The deal contains a card that is not owned by the user." });
+                    return;
+                }
+
+                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
+
                 await responseHandler.SendOkAsync();
             }
             catch (JsonException ex)

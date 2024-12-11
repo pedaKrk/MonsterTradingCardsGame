@@ -162,8 +162,7 @@ Authorization: Bearer kienboec-mtcgToken
 {
   "Id": "6cd85277-4590-49d4-b0cf-ba0a921faad0",
   "CardId": "1cb6ab86-bdb2-47e5-b6e4-68c5ab389334",
-  "CardType": "monster",
-  "MinDamage": 15
+  "Price": "10.0" 
 }
 
 ### 10) Show Trading Deals
