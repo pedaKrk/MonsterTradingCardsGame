@@ -166,5 +166,23 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 await responseHandler.SendBadRequestAsync();
             }
         }
+
+        public static async Task HandleGetUserStatsAsync(HttpResponseHandler responseHandler, Headers headers)
+        {
+            try
+            {
+                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
+                if (user == null)
+                {
+                    return;
+                }
+              
+                await responseHandler.SendOkAsync(new {user.Stats});
+            }
+            catch (JsonException)
+            {
+                await responseHandler.SendBadRequestAsync();
+            }
+        }
     }
 }
