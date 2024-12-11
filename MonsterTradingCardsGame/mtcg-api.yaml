@@ -463,20 +463,18 @@ components:
           type: string
           format: uuid
           description: The ID of the deal
-        CardToTrade:
+        CardId:
           type: string
           format: uuid
           description: The card ID offered
-        Type:
+        Username:
           type: string
-          enum: [monster, spell]
-          example: monster
-          description: The required card type of the received card
-        MinimumDamage:
+          description: username
+        Price:
           type: number
-          format: float
+          format: double
           example: 15
-          description: The required minimum damage of the the received card
+          description: The price of the card offered
 
   securitySchemes:
     mtcgAuth:
