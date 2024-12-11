@@ -19,11 +19,11 @@ namespace MonsterTradingCardsGame.Server
         private static readonly int _port = 10001;
 
         /*
-         * ToDo: - Battle
-         *       - UserStats (name wird nicht upgedated)
-         *       - trading testend
-         *       - unique feature marketplace wo cards coins wert sind !!
+         * ToDo: - Battle implementieren
+         *       - UserStats (name wird nicht geupdated)
+         *       - trading testen
          *       - CardHandler ist eigentlich UserHandler, da nur der stack abgefragt wird
+         *       - unique feature marketplace wo cards coins wert sind !!
          */
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
