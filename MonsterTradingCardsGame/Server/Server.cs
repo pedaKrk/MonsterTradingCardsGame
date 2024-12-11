@@ -30,7 +30,8 @@ namespace MonsterTradingCardsGame.Server
             { "/sessions", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleUserLoginAsync(responseHandler, requestBody) },
             { "/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
             { "/transactions/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
-            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) }
+            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) },
+            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleAcceptTradingDealAsync(responseHandler, headers, parameters?["tradingdealid"]) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _getRoutes = new()

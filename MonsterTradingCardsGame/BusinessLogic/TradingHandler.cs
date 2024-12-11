@@ -132,7 +132,7 @@ namespace MonsterTradingCardsGame.BusinessLogic
                 await responseHandler.SendBadRequestAsync();
             }
         }
-        public static async Task HandleAcceptTradingDealAsync(HttpResponseHandler responseHandler, Headers headers, string requestbody, string? tradingDealId)
+        public static async Task HandleAcceptTradingDealAsync(HttpResponseHandler responseHandler, Headers headers, string? tradingDealId)
         {
             try
             {
@@ -155,13 +155,36 @@ namespace MonsterTradingCardsGame.BusinessLogic
                     return;
                 }
 
-                if (!user.Stack.HasCard(tradingDeal.CardId))
+                if (user.Username == tradingDeal.Username)
                 {
-                    await responseHandler.SendForbiddenAsync(new { error = "The deal contains a card that is not owned by the user." });
+                    await responseHandler.SendForbiddenAsync(new {error= "user can't trade with self."});
                     return;
                 }
 
-                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
+                var offerer = InMemoryDatabase.GetUser(tradingDeal.Username);
+                if (offerer == null)
+                {
+                    await responseHandler.SendInternalServerErrorAsync();
+                    return;
+                }
+
+                var card = offerer.Stack.GetCardById(tradingDeal.CardId);
+                if (card == null)
+                {
+                    await responseHandler.SendForbiddenAsync(new { error = "offerer doesn't own this card." });
+                    return;
+                }
+
+                if(user.Coins - tradingDeal.Price < 0)
+                {
+                    await responseHandler.SendForbiddenAsync(new { error = "user doens't have enough coins to purchse this card." });
+                    return;
+                }
+
+                user.Coins -= tradingDeal.Price;
+                offerer.Coins += tradingDeal.Price;
+                offerer.Stack.RemoveCard(card);
+                user.Stack.AddCard(card);
 
                 await responseHandler.SendOkAsync();
             }
