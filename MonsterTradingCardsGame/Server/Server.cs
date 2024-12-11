@@ -22,6 +22,7 @@ namespace MonsterTradingCardsGame.Server
          *       - Battle
          *       - UserStats
          *       - unique feature marketplace wo cards coins wert sind !!
+         *       - CardHandler ist eigentlich UserHandler, da nur der stack abgefragt wird
          */
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
@@ -39,7 +40,9 @@ namespace MonsterTradingCardsGame.Server
             { "/cards", async (responseHandler, headers, requestBody, parameters) => await CardHandler.HandleGetAllCardsAsync(responseHandler, headers) },
             { "/deck", async (responseHandler, headers, requestBody, parametes) => await DeckHandler.HandleGetDeckAsync(responseHandler, headers) },
             { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserDataAsync(responseHandler, headers, parameters?["username"]) },
-            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers) }
+            { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleGetTradesAsync(responseHandler, headers) },
+            { "/stats", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleGetUserStatsAsync(responseHandler, headers) },
+            { "/scoreboard", async (responseHandler, headers, requestBody, parameters) => await ScoreboardHandler.HandleGetScoreboardAsync(responseHandler, headers) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _putRoutes = new()

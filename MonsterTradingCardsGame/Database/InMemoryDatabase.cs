@@ -31,6 +31,11 @@ namespace MonsterTradingCardsGame.Database
             return null;
         }
 
+        public static List<User> GetAllUsers()
+        {
+            return new List<User>(Users);
+        }
+
         public static bool UserExists(string username)
         {
             return Users.Any(u => u.Username == username);
