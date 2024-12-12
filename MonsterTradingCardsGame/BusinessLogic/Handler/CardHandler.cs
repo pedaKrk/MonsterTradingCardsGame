@@ -23,6 +23,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 }
 
                 List<Card> cards = user.Stack.GetAllCards();
+                cards.AddRange(user.Deck.GetCards());
 
                 if (cards.Count == 0)
                 {

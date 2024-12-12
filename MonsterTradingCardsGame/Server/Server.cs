@@ -22,7 +22,6 @@ namespace MonsterTradingCardsGame.Server
          * ToDo: - Battle implementieren
          *       - UserStats (name wird nicht geupdated)
          *       - trading testen
-         *       - CardHandler ist eigentlich UserHandler, da nur der stack abgefragt wird
          *       - unique feature marketplace wo cards coins wert sind !!
          */
 
