@@ -21,8 +21,11 @@ namespace MonsterTradingCardsGame.Server
         /*
          * ToDo: - Battle implementieren
          *       - UserStats (name wird nicht geupdated)
-         *       - trading testen
-         *       - unique feature marketplace wo cards coins wert sind !!
+         *       - Endpunkte testen
+         *       - Unique feature marketplace wo cards coins wert sind !!
+         *       - RoleSystem
+         *       - DB
+         *       - UnitTests
          */
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
