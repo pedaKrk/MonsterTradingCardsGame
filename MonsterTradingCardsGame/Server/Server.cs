@@ -68,7 +68,15 @@ namespace MonsterTradingCardsGame.Server
 
             while (true)
             {
-                Task.Run(() => HandleClientAsync(server.AcceptTcpClient()));
+                try
+                {
+                    var client = server.AcceptTcpClient();
+                    Task.Run(() => HandleClientAsync(client));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error accepting client: {ex.Message}");
+                }
             }
         }
 
@@ -76,6 +84,7 @@ namespace MonsterTradingCardsGame.Server
         {
             try
             {
+                Console.WriteLine("Client connected");
                 using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
                 using var reader = new StreamReader(client.GetStream());
 
@@ -96,6 +105,7 @@ namespace MonsterTradingCardsGame.Server
             }
             finally
             {
+                Console.WriteLine("client disconnected");
                 client.Close();
             }
         }
