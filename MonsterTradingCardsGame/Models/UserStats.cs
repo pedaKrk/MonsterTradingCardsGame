@@ -12,5 +12,6 @@ namespace MonsterTradingCardsGame.Models
         public int Elo { get; set; } = 1000;
         public int Wins { get; set; } = 0;
         public int Losses { get; set; } = 0;
+
     }
 }

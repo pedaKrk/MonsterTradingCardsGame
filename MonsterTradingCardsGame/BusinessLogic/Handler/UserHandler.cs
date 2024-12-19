@@ -114,7 +114,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
 
-                var userData = user.Profile;
+                var userData = user.Data;
 
                 await responseHandler.SendOkAsync(new { userData });
             }
@@ -155,14 +155,15 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
                 */
-                var newUserProfile = JsonSerializer.Deserialize<UserProfile>(requestBody);
-                if (newUserProfile == null)
+                var newUserData = JsonSerializer.Deserialize<UserData>(requestBody);
+                if (newUserData == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                user.Profile.Update(newUserProfile);
+                user.Data.Update(newUserData);
+                user.Stats.Name = user.Data.Name;
 
                 await responseHandler.SendOkAsync();
             }

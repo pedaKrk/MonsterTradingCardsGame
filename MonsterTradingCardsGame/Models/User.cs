@@ -12,7 +12,7 @@ namespace MonsterTradingCardsGame.Models
         public string Password { get; }
         public int Id { get; set; }
         public double Coins { get; set; } = 20;
-        public UserProfile Profile { get; set; } = new UserProfile();
+        public UserData Data { get; set; }
         public UserStats Stats { get; set; }
         public Role Role { get; set; } = Role.User;
         public Stack Stack { get; } = new Stack();
@@ -23,7 +23,7 @@ namespace MonsterTradingCardsGame.Models
             Username = username;
             Password = password;
 
-            Profile.Name = Username;
+            Data = new UserData(Username);
             Stats = new UserStats(Username);
         }
     }
