@@ -114,7 +114,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
 
-                await responseHandler.SendOkAsync(new { user });
+                var userData = user.Profile;
+
+                await responseHandler.SendOkAsync(new { userData });
             }
             catch (JsonException)
             {

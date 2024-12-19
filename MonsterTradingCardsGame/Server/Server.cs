@@ -20,8 +20,10 @@ namespace MonsterTradingCardsGame.Server
 
         /*
          * ToDo: - Battle implementieren
+         *       - rename UserProfile to UserData
          *       - UserStats (name wird nicht geupdated)
-         *       - Endpunkte testen
+         *       - Endpunkte testen:
+         *          - trading funktioniert nicht
          *       - Unique feature marketplace wo cards coins wert sind !!
          *       - RoleSystem
          *       - DB
@@ -51,7 +53,7 @@ namespace MonsterTradingCardsGame.Server
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _putRoutes = new()
         {
             { "/deck", async (responseHandler, headers, requestBody, parameters) => await DeckHandler.HandleConfigureDeckAsync(responseHandler, headers, requestBody) },
-            { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameters?["username"]) }
+            { "/users/{username}", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleChangeUserDataAsync(responseHandler, headers, requestBody, parameters?["username"]) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _deleteRoutes = new()
