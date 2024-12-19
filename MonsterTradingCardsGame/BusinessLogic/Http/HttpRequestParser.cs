@@ -64,6 +64,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Http
 
         public static async Task<User?> AuthenticateAndGetUserAsync(HttpResponseHandler responseHandler, Headers headers)
         {
+            //exception werfen falls user nicht gefunden
             string? authorizationToken = ReadAuthorizationHeader(headers);
             if (authorizationToken == null)
             {

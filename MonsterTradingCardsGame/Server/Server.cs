@@ -22,8 +22,6 @@ namespace MonsterTradingCardsGame.Server
          * ToDo: - Battle implementieren
          *       - rename UserProfile to UserData
          *       - UserStats (name wird nicht geupdated)
-         *       - Endpunkte testen:
-         *          - trading funktioniert nicht
          *       - Unique feature marketplace wo cards coins wert sind !!
          *       - RoleSystem
          *       - DB

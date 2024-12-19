@@ -23,20 +23,14 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
 
-                var options = new JsonSerializerOptions
-                {
-                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody, options);
+                var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody);
                 if (tradingDealDTO == null)
                 {
                     await responseHandler.SendBadRequestAsync();
                     return;
                 }
 
-                var tradingDeal = new TradingDeal(tradingDealDTO.Id, tradingDealDTO.CardId, user.Username, tradingDealDTO.Price);
+                var tradingDeal = new TradingDeal(tradingDealDTO, user.Username);
 
                 var card = user.Stack.GetCardById(tradingDeal.CardId);
                 if (card == null)
@@ -187,6 +181,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 offerer.Coins += tradingDeal.Price;
                 offerer.Stack.RemoveCard(card);
                 user.Stack.AddCard(card);
+
+                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
 
                 await responseHandler.SendOkAsync();
             }
