@@ -73,6 +73,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     var newToken = TokenService.GenerateToken(user.Username);
                     Console.WriteLine($"User {loginUser.Username} logged in successfully.");
                     await responseHandler.SendOkAsync(new { newToken });
+                    return;
                 }
 
                 Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
