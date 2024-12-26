@@ -1,5 +1,5 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Http;
-using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;

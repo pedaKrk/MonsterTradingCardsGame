@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Http
+namespace MonsterTradingCardsGame.Http
 {
     internal class HttpResponseHandler
     {

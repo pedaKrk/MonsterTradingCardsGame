@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using MonsterTradingCardsGame.Server;
+using MonsterTradingCardsGame.Http;
 
-Server.Run();
+HttpServer.Run();
 

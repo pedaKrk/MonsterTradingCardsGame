@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MonsterTradingCardsGame.Models;
 
-namespace MonsterTradingCardsGame.BusinessLogic.DAL
+namespace MonsterTradingCardsGame.DAL
 {
     internal class UserRepository
     {

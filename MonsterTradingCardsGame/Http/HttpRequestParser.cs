@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Http
+namespace MonsterTradingCardsGame.Http
 {
     internal class HttpRequestParser
     {
@@ -78,7 +78,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Http
                 await responseHandler.SendUnauthorizedAsync();
                 return null;
             }
-
+            Console.WriteLine($"{username}: {authorizationToken}");
             var user = InMemoryDatabase.GetUser(username);
             if (user == null)
             {

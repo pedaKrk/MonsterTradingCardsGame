@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
 using MonsterTradingCardsGame.BusinessLogic.Handler;
-using MonsterTradingCardsGame.BusinessLogic.Http;
 
-namespace MonsterTradingCardsGame.Server
+namespace MonsterTradingCardsGame.Http
 {
-    internal class Server
+    internal class HttpServer
     {
 
         private static readonly int _port = 10001;
@@ -32,7 +31,8 @@ namespace MonsterTradingCardsGame.Server
             { "/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
             { "/transactions/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
             { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) },
-            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleAcceptTradingDealAsync(responseHandler, headers, parameters?["tradingdealid"]) }
+            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleAcceptTradingDealAsync(responseHandler, headers, parameters?["tradingdealid"]) },
+            { "/battles", async (responseHandler, headers, requestBody, parameters) => await BattleHandler.JoinBattleAsync(responseHandler, headers) }
         };
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _getRoutes = new()
@@ -128,9 +128,9 @@ namespace MonsterTradingCardsGame.Server
 
             var (matchedRoute, parameters) = MatchPath(path, methodRoutes);
 
-            if (matchedRoute != null && methodRoutes.TryGetValue(matchedRoute, out var handler)) 
+            if (matchedRoute != null && methodRoutes.TryGetValue(matchedRoute, out var handler))
             {
-                await handler(responseHandler, headers, requestBody, parameters);                
+                await handler(responseHandler, headers, requestBody, parameters);
                 return;
             }
 

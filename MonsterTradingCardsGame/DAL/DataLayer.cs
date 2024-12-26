@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using System.Data;
 
-namespace MonsterTradingCardsGame.BusinessLogic.DAL
+namespace MonsterTradingCardsGame.DAL
 {
     internal class DataLayer : IDisposable
     {
