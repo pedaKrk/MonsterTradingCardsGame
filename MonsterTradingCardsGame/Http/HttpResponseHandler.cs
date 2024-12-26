@@ -63,7 +63,7 @@ namespace MonsterTradingCardsGame.Http
         {
             if (responseBody != null)
             {
-                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                var jsonResponse = JsonSerializer.Serialize(new { error = responseBody });
                 await SendResponseAsync("400 Bad Request", "application/json", jsonResponse);
                 return;
             }
@@ -75,7 +75,7 @@ namespace MonsterTradingCardsGame.Http
         {
             if (responseBody != null)
             {
-                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                var jsonResponse = JsonSerializer.Serialize(new { error = responseBody });
                 await SendResponseAsync("401 Unauthorized", "application/json", jsonResponse);
                 return;
             }
@@ -87,7 +87,7 @@ namespace MonsterTradingCardsGame.Http
         {
             if (responseBody != null)
             {
-                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                var jsonResponse = JsonSerializer.Serialize(new { error = responseBody });
                 await SendResponseAsync("403 Forbidden", "application/json", jsonResponse);
                 return;
             }
@@ -99,7 +99,7 @@ namespace MonsterTradingCardsGame.Http
         {
             if (responseBody != null)
             {
-                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                var jsonResponse = JsonSerializer.Serialize(new { error = responseBody });
                 await SendResponseAsync("404 Not Found", "application/json", jsonResponse);
                 return;
             }
@@ -111,7 +111,7 @@ namespace MonsterTradingCardsGame.Http
         {
             if (responseBody != null)
             {
-                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                var jsonResponse = JsonSerializer.Serialize(new { error = responseBody });
                 await SendResponseAsync("409 Conflict", "application/json", jsonResponse);
                 return;
             }
