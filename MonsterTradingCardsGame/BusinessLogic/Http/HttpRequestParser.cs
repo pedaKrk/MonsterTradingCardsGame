@@ -72,12 +72,6 @@ namespace MonsterTradingCardsGame.BusinessLogic.Http
                 return null;
             }
 
-            if (!TokenService.HasToken(authorizationToken))
-            {
-                await responseHandler.SendUnauthorizedAsync();
-                return null;
-            }
-
             string? username = TokenService.GetUsernameByToken(authorizationToken);
             if (username == null)
             {

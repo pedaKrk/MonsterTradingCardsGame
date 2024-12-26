@@ -59,30 +59,24 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
 
-                var user = InMemoryDatabase.Users.FirstOrDefault(u => u.Username == loginUser.Username);
-
+                var user = InMemoryDatabase.GetUser(loginUser.Username);
                 if (user == null || loginUser.Password != user.Password)
                 {
-                    Console.WriteLine("User not found or wrong credentials.");
+                    Console.WriteLine("wrong credentials.");
                     await responseHandler.SendUnauthorizedAsync();
                     return;
                 }
 
-                if (TokenService.HasUserToken(user.Username))
+                string? token = TokenService.GetTokenByUsername(user.Username);
+                if (token == null)
                 {
-                    string token = TokenService.GetTokenByUsername(user.Username);
-
-                    Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
-                    await responseHandler.SendOkAsync(new { token });
-                    return;
+                    var newToken = TokenService.GenerateToken(user.Username);
+                    Console.WriteLine($"User {loginUser.Username} logged in successfully.");
+                    await responseHandler.SendOkAsync(new { newToken });
                 }
 
-                TokenService.GenerateToken(user.Username);
-                string newToken = TokenService.GetTokenByUsername(user.Username);
-
-                Console.WriteLine($"User {loginUser.Username} logged in successfully.");
-                await responseHandler.SendOkAsync(new { newToken });
-
+                Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
+                await responseHandler.SendOkAsync(new { token });    
             }
             catch (JsonException)
             {
