@@ -1,5 +1,6 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Token;
 using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Models;
 using System;
 using System.Collections.Generic;
@@ -62,31 +63,13 @@ namespace MonsterTradingCardsGame.Http
             return authorizationHeaderValue[BearerPrefix.Length..].Trim();
         }
 
-        public static async Task<User?> AuthenticateAndGetUserAsync(HttpResponseHandler responseHandler, Headers headers)
+        public static User AuthenticateAndGetUser(Headers headers)
         {
-            //exception werfen falls user nicht gefunden
-            string? authorizationToken = ReadAuthorizationHeader(headers);
-            if (authorizationToken == null)
-            {
-                await responseHandler.SendBadRequestAsync();
-                return null;
-            }
+            string? authorizationToken = ReadAuthorizationHeader(headers) ?? throw new BadRequestException("bad request");
+            string? username = TokenService.GetUsernameByToken(authorizationToken) ?? throw new UnauthorizedException("user not found.");
 
-            string? username = TokenService.GetUsernameByToken(authorizationToken);
-            if (username == null)
-            {
-                await responseHandler.SendUnauthorizedAsync();
-                return null;
-            }
             Console.WriteLine($"{username}: {authorizationToken}");
-            var user = InMemoryDatabase.GetUser(username);
-            if (user == null)
-            {
-                await responseHandler.SendUnauthorizedAsync();
-                return null;
-            }
-
-            return user;
+            return InMemoryDatabase.GetUser(username) ?? throw new UnauthorizedException("user not found.");
         }
     }
 }

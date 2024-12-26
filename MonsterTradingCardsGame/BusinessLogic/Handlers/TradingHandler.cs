@@ -1,15 +1,10 @@
 ﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class TradingHandler
     {
@@ -17,42 +12,42 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody);
-                if (tradingDealDTO == null)
-                {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
-                }
+                var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody) ?? throw new BadRequestException("bad json.");
 
                 var tradingDeal = new TradingDeal(tradingDealDTO, user.Username);
 
-                var card = user.Stack.GetCardById(tradingDeal.CardId);
-                if (card == null)
-                {
-                    await responseHandler.SendForbiddenAsync(new { error = "the user doesn't own this card." });
-                    return;
-                }
+                var card = user.Stack.GetCardById(tradingDeal.CardId) ?? throw new ForbiddenException("the user doesn't own this card.");
 
                 if (InMemoryDatabase.TradingDealExists(tradingDeal.Id))
                 {
-                    await responseHandler.SendConflictResponseAsync();
-                    return;
+                    throw new ConflictException("tradingdeal already exists");
                 }
 
                 InMemoryDatabase.AddTradingDeal(tradingDeal);
 
-                await responseHandler.SendCreatedResponseAsync();
+                await responseHandler.SendCreatedAsync();
             }
             catch (JsonException ex)
             {
-                Console.WriteLine(ex.Message);
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
+            }
+            catch (ForbiddenException ex)
+            {
+                await responseHandler.SendForbiddenAsync(ex.Message);
+            }
+            catch (ConflictException ex)
+            {
+                await responseHandler.SendConflictAsync(ex.Message);
             }
         }
 
@@ -60,19 +55,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var tradingDeals = InMemoryDatabase.TradingDeals;
-                if (tradingDeals == null)
-                {
-                    await responseHandler.SendInternalServerErrorAsync();
-                    return;
-                }
-
+                var tradingDeals = InMemoryDatabase.TradingDeals ?? throw new InternalServerException();
                 if (tradingDeals.Count == 0)
                 {
                     await responseHandler.SendNoContentAsync();
@@ -80,12 +65,22 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 }
 
                 await responseHandler.SendOkAsync(new { tradingDeals });
-
             }
             catch (JsonException ex)
             {
-                Console.WriteLine(ex.Message);
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
+            }
+            catch (InternalServerException)
+            {
+                await responseHandler.SendInternalServerErrorAsync();
             }
         }
 
@@ -93,29 +88,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 if (tradingDealId == null)
                 {
-                    await responseHandler.SendBadRequestAsync(new { error = "tradingDealId is required." });
-                    return;
+                    throw new BadRequestException("tradingDealId is required.");
                 }
 
-                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId);
-                if (tradingDeal == null)
-                {
-                    await responseHandler.SendNotFoundAsync();
-                    return;
-                }
-
+                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
                 if (!user.Stack.HasCard(tradingDeal.CardId))
                 {
-                    await responseHandler.SendForbiddenAsync(new { error = "The deal contains a card that is not owned by the user." });
-                    return;
+                    throw new ForbiddenException("The deal contains a card that is not owned by the user.");
                 }
 
                 InMemoryDatabase.DeleteTradingDeal(tradingDealId);
@@ -124,57 +107,46 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
             }
             catch (JsonException ex)
             {
-                Console.WriteLine(ex.Message);
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                await responseHandler.SendNotFoundAsync(ex.Message);
             }
         }
+
         public static async Task HandleAcceptTradingDealAsync(HttpResponseHandler responseHandler, Headers headers, string? tradingDealId)
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 if (tradingDealId == null)
                 {
-                    await responseHandler.SendBadRequestAsync(new { error = "tradingDealId is required." });
-                    return;
+                    throw new BadRequestException("tradingDealId is required.");
                 }
 
-                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId);
-                if (tradingDeal == null)
-                {
-                    await responseHandler.SendNotFoundAsync();
-                    return;
-                }
+                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
 
                 if (user.Username == tradingDeal.Username)
                 {
-                    await responseHandler.SendForbiddenAsync(new { error = "user can't trade with self." });
-                    return;
+                    throw new ForbiddenException("user can't trade with self.");
                 }
 
-                var offerer = InMemoryDatabase.GetUser(tradingDeal.Username);
-                if (offerer == null)
-                {
-                    await responseHandler.SendInternalServerErrorAsync();
-                    return;
-                }
-
-                var card = offerer.Stack.GetCardById(tradingDeal.CardId);
-                if (card == null)
-                {
-                    await responseHandler.SendForbiddenAsync(new { error = "offerer doesn't own this card." });
-                    return;
-                }
+                var offerer = InMemoryDatabase.GetUser(tradingDeal.Username) ?? throw new InternalServerException();
+                var card = offerer.Stack.GetCardById(tradingDeal.CardId) ?? throw new ForbiddenException("offerer doesn't own this card.");
 
                 if (user.Coins - tradingDeal.Price < 0)
                 {
-                    await responseHandler.SendForbiddenAsync(new { error = "user doens't have enough coins to purchse this card." });
-                    return;
+                    throw new ForbiddenException("user doens't have enough coins to purchse this card.");
                 }
 
                 user.Coins -= tradingDeal.Price;
@@ -188,8 +160,27 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
             }
             catch (JsonException ex)
             {
-                Console.WriteLine(ex.Message);
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                await responseHandler.SendNotFoundAsync(ex.Message);
+            }
+            catch (ForbiddenException ex)
+            {
+                await responseHandler.SendForbiddenAsync(ex.Message);
+            }
+            catch (InternalServerException)
+            {
+                await responseHandler.SendInternalServerErrorAsync();
             }
         }
     }

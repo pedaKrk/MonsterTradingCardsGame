@@ -1,16 +1,11 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Token;
 using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class UserHandler
     {
@@ -22,24 +17,30 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 if (string.IsNullOrWhiteSpace(newUser?.Username) || string.IsNullOrWhiteSpace(newUser?.Password))
                 {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
+                    throw new BadRequestException("bad json.");
                 }
 
                 if (InMemoryDatabase.UserExists(newUser.Username))
                 {
-                    await responseHandler.SendConflictResponseAsync();
-                    return;
+                    throw new ConflictException("user already exists.");
                 }
 
                 Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
                 InMemoryDatabase.AddUser(newUser);
 
-                await responseHandler.SendCreatedResponseAsync();
+                await responseHandler.SendCreatedAsync();
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (ConflictException ex)
+            {
+                await responseHandler.SendConflictAsync(ex.Message);
             }
         }
 
@@ -47,24 +48,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                Console.WriteLine("Login:\n");
                 var loginUser = JsonSerializer.Deserialize<User>(requestBody);
-
-                Console.WriteLine($"Username: {loginUser?.Username}, Password: {loginUser?.Password}");
 
                 if (string.IsNullOrWhiteSpace(loginUser?.Username) || string.IsNullOrWhiteSpace(loginUser?.Password))
                 {
-                    Console.WriteLine("Not Username or Password provided.");
-                    await responseHandler.SendBadRequestAsync();
-                    return;
+                    throw new BadRequestException("no username or password provided.");
                 }
 
                 var user = InMemoryDatabase.GetUser(loginUser.Username);
                 if (user == null || loginUser.Password != user.Password)
                 {
-                    Console.WriteLine("wrong credentials.");
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
+                    throw new UnauthorizedException("wrong credentials.");
                 }
 
                 string? token = TokenService.GetTokenByUsername(user.Username);
@@ -77,11 +71,19 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 }
 
                 Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
-                await responseHandler.SendOkAsync(new { token });    
+                await responseHandler.SendOkAsync(new { token });
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
             }
 
         }
@@ -96,11 +98,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                     return;
                 }
 
-                var authorizedUser = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (authorizedUser == null)
-                {
-                    return;
-                }
+                var authorizedUser = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 var user = InMemoryDatabase.GetUser(username);
                 if (user == null)
@@ -113,9 +111,13 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 await responseHandler.SendOkAsync(new { userData });
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
             }
         }
 

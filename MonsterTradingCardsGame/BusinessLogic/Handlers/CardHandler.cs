@@ -1,14 +1,10 @@
 ﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class CardHandler
     {
@@ -16,11 +12,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 List<Card> cards = user.Stack.GetAllCards();
                 cards.AddRange(user.Deck.GetCards());
@@ -33,9 +25,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 await responseHandler.SendOkAsync(new { cards });
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
             }
         }
     }

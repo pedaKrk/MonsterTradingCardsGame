@@ -1,14 +1,10 @@
-﻿using MonsterTradingCardsGame.Database;
+﻿using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class DeckHandler
     {
@@ -16,35 +12,19 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var cardIds = JsonSerializer.Deserialize<List<string>>(requestBody);
-                if (cardIds == null)
-                {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
-                }
+                var cardIds = JsonSerializer.Deserialize<List<string>>(requestBody) ?? throw new BadRequestException("bad json.");
 
                 if (cardIds.Count != Deck.DeckSize)
                 {
-                    await responseHandler.SendBadRequestAsync(new { error = "The provided deck did not include the required amount of cards" });
-                    return;
+                    throw new BadRequestException("The provided deck did not include the required amount of cards");
                 }
 
                 var cards = new List<Card>(Deck.DeckSize);
                 foreach (var cardId in cardIds)
                 {
-                    Card? card = user.Stack.GetCardById(cardId);
-                    if (card == null)
-                    {
-                        await responseHandler.SendForbiddenAsync(new { error = "At least one of the provided cards does not belong to the user or is not available." });
-                        return;
-                    }
-
+                    Card? card = user.Stack.GetCardById(cardId) ?? throw new BadRequestException("At least one of the provided cards does not belong to the user or is not available.");
                     cards.Add(card);
                 }
 
@@ -52,9 +32,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 await responseHandler.SendOkAsync();
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
             }
         }
 
@@ -62,11 +50,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 var cards = user.Deck.GetCards();
 
@@ -78,9 +62,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 await responseHandler.SendOkAsync(new { cards });
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
             }
         }
     }

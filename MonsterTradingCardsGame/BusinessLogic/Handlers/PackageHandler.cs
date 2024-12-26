@@ -1,16 +1,11 @@
 ﻿using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class PackageHandler
     {
@@ -18,11 +13,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 /*
                  * erst wieder einfuegen, wenn Role System implementiert ist
@@ -43,8 +34,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 var cards = JsonSerializer.Deserialize<List<Card>>(requestBody, options);
                 if (cards == null || cards.Count == 0)
                 {
-                    await responseHandler.SendBadRequestAsync();
-                    return;
+                    throw new BadRequestException("bad json.");
                 }
 
                 //--error--
@@ -54,12 +44,19 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
                 var package = new Package(cards);
                 InMemoryDatabase.AddPackage(package);
 
-                await responseHandler.SendCreatedResponseAsync();
+                await responseHandler.SendCreatedAsync();
             }
             catch (JsonException ex)
             {
-                Console.WriteLine(ex.Message);
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
             }
         }
 
@@ -67,16 +64,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         {
             try
             {
-                var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-                if (user == null)
-                {
-                    return;
-                }
+                var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 if (user.Coins - Package.Price < 0)
                 {
-                    await responseHandler.SendForbiddenAsync(new { error = "not enough money to acquire a package!" });
-                    return;
+                    throw new ForbiddenException("not enough money to acquire a package!");
                 }
 
                 Package? package = InMemoryDatabase.AcquirePackage();
@@ -91,9 +83,21 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
 
                 await responseHandler.SendOkAsync();
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                await responseHandler.SendBadRequestAsync();
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                await responseHandler.SendBadRequestAsync(ex.Message);
+            }
+            catch (UnauthorizedException ex)
+            {
+                await responseHandler.SendUnauthorizedAsync(ex.Message);
+            }
+            catch (ForbiddenException ex)
+            {
+                await responseHandler.SendForbiddenAsync(ex.Message);
             }
         }
     }

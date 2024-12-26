@@ -1,12 +1,7 @@
 ﻿using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.BusinessLogic.Handler
+namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class BattleHandler
     {
@@ -15,11 +10,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handler
         public static async Task JoinBattleAsync(HttpResponseHandler responseHandler, Headers headers)
         {
             //funktioniert nicht
-            var user = await HttpRequestParser.AuthenticateAndGetUserAsync(responseHandler, headers);
-            if (user == null)
-            {
-                return;
-            }
+            var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
             var playerSession = new PlayerSession(user, responseHandler);
 

@@ -49,7 +49,7 @@ namespace MonsterTradingCardsGame.Http
             await SendResponseAsync("200 OK", null, null);
         }
 
-        public async Task SendCreatedResponseAsync()
+        public async Task SendCreatedAsync()
         {
             await SendResponseAsync("201 Created", null, null);
         }
@@ -71,8 +71,15 @@ namespace MonsterTradingCardsGame.Http
             await SendResponseAsync("400 Bad Request", null, null);
         }
 
-        public async Task SendUnauthorizedAsync()
+        public async Task SendUnauthorizedAsync(object? responseBody = null)
         {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("401 Unauthorized", "application/json", jsonResponse);
+                return;
+            }
+
             await SendResponseAsync("401 Unauthorized", null, null);
         }
 
@@ -88,13 +95,27 @@ namespace MonsterTradingCardsGame.Http
             await SendResponseAsync("403 Forbidden", null, null);
         }
 
-        public async Task SendNotFoundAsync()
+        public async Task SendNotFoundAsync(object? responseBody = null)
         {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("404 Not Found", "application/json", jsonResponse);
+                return;
+            }
+
             await SendResponseAsync("404 Not Found", null, null);
         }
 
-        public async Task SendConflictResponseAsync()
+        public async Task SendConflictAsync(object? responseBody = null)
         {
+            if (responseBody != null)
+            {
+                var jsonResponse = JsonSerializer.Serialize(responseBody);
+                await SendResponseAsync("409 Conflict", "application/json", jsonResponse);
+                return;
+            }
+
             await SendResponseAsync("409 Conflict", null, null);
         }
 

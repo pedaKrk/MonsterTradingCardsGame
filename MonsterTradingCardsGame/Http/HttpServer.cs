@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
-using MonsterTradingCardsGame.BusinessLogic.Handler;
+using MonsterTradingCardsGame.BusinessLogic.Handlers;
 
 namespace MonsterTradingCardsGame.Http
 {
