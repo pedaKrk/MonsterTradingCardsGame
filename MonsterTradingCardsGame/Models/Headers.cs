@@ -15,11 +15,6 @@ namespace MonsterTradingCardsGame.Models
             _headers = [];
         }
 
-        public Headers(Dictionary<string, string> headers)
-        {
-            _headers = new Dictionary<string, string>(headers);
-        }
-
         public void AddHeader(string key, string value) 
         { 
             _headers[key] = value;

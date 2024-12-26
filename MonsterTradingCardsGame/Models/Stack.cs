@@ -28,21 +28,9 @@ namespace MonsterTradingCardsGame.Models
             _stack.Remove(card);
         }
 
-        public Card GetCardAt(int index)
+        public Card? GetCardById(string cardId)
         {
-            return _stack[index];
-        }
-
-        public Card? GetCardById(string id)
-        {
-            foreach (Card card in _stack)
-            {
-                if (card.Id == id)
-                {
-                    return card;
-                }
-            }
-            return null;
+            return _stack.FirstOrDefault(card => card.Id == cardId);
         }
 
         public bool HasCard(string cardId)
@@ -53,17 +41,6 @@ namespace MonsterTradingCardsGame.Models
         public List<Card> GetAllCards()
         {
             return new List<Card>(_stack);
-        }
-
-        public override string ToString()
-        {
-            string str = string.Empty;
-            foreach (Card card in _stack) 
-            {
-                str += card.ToString() + "\n";
-            }
-
-            return str;
         }
     }
 }
