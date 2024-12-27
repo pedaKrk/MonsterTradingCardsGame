@@ -13,10 +13,5 @@ namespace MonsterTradingCardsGame.Models
         public string Name { get; } = name;
         public Element Element { get; } = element;
         public CardType CardType { get; } = cardType;
-
-        public override string ToString()
-        {
-            return $"[{CardType} Card] Id: {Id}, Name: {Name}, Damage: {Damage}, Element: {Element}";
-        }
     }
 }
