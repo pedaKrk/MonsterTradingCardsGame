@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class UserData
+    internal class UserData(string name)
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = name;
         public string? Bio { get; set; }
         public string? Image { get; set; }
-
-        public UserData(string name) 
-        {
-            Name = name;
-        }
 
         public void Update(UserData userData)
         {
