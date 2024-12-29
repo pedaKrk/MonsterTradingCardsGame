@@ -66,8 +66,16 @@ CREATE TABLE TradingDeals (
 -- Create Packages table
 CREATE TABLE Packages (
     Id SERIAL PRIMARY KEY,
-    CardId UUID NOT NULL,
-    FOREIGN KEY (CardId) REFERENCES Cards(Id) ON DELETE CASCADE
+    Card1Id UUID NOT NULL,
+    Card2Id UUID NOT NULL,
+    Card3Id UUID NOT NULL,
+    Card4Id UUID NOT NULL,
+    Card5Id UUID NOT NULL,
+    FOREIGN KEY (Card1Id) REFERENCES Cards(Id) ON DELETE CASCADE,
+    FOREIGN KEY (Card2Id) REFERENCES Cards(Id) ON DELETE CASCADE,
+    FOREIGN KEY (Card3Id) REFERENCES Cards(Id) ON DELETE CASCADE,
+    FOREIGN KEY (Card4Id) REFERENCES Cards(Id) ON DELETE CASCADE,
+    FOREIGN KEY (Card5Id) REFERENCES Cards(Id) ON DELETE CASCADE
 );
 
 -- Insert sample data into Users table
@@ -83,7 +91,8 @@ VALUES
 ('550e8400-e29b-41d4-a716-446655440000', 'Fire Dragon', 50, 'Fire', 'Monster'),
 ('550e8400-e29b-41d4-a716-446655440001', 'Water Wizard', 40, 'Water', 'Spell'),
 ('550e8400-e29b-41d4-a716-446655440002', 'Earth Golem', 60, 'Normal', 'Monster'),
-('550e8400-e29b-41d4-a716-446655440003', 'Lightning Bolt', 30, 'Normal', 'Spell');
+('550e8400-e29b-41d4-a716-446655440003', 'Lightning Bolt', 30, 'Normal', 'Spell'),
+('550e8400-e29b-41d4-a716-446655440004', 'Tsunami', 35, 'Water', 'Spell');
 
 -- Insert sample data into UserStats table
 INSERT INTO UserStats (UserId, Elo, Wins, Losses)
@@ -120,9 +129,8 @@ VALUES
 ('550e8400-e29b-41d4-a716-446655440101', '550e8400-e29b-41d4-a716-446655440001', 12.0, 'player2');
 
 -- Insert sample data into Packages table
-INSERT INTO Packages (CardId)
+INSERT INTO Packages (Card1Id, Card2Id, Card3Id, Card4Id, Card5Id)
 VALUES 
-('550e8400-e29b-41d4-a716-446655440000'),
-('550e8400-e29b-41d4-a716-446655440001'),
-('550e8400-e29b-41d4-a716-446655440002'),
-('550e8400-e29b-41d4-a716-446655440003');
+('550e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440001', 
+ '550e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440003', 
+ '550e8400-e29b-41d4-a716-446655440004');
