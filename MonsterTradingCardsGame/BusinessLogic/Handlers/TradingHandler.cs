@@ -1,5 +1,5 @@
-﻿using MonsterTradingCardsGame.Database;
-using MonsterTradingCardsGame.Exceptions;
+﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;

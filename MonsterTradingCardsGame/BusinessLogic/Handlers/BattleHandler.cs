@@ -18,9 +18,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 if (WaitingPlayers.Count == 0)
                 {
-                    Console.WriteLine("Player waiting for a battle...");
                     WaitingPlayers.Enqueue(playerSession);
-                    return;
+                }
+                while(WaitingPlayers.Count == 0)
+                {
+                    Console.WriteLine("Player waiting for a battle...");
                 }
 
                 var opponentSession = WaitingPlayers.Dequeue();

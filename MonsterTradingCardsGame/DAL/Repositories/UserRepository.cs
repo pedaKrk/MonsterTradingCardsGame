@@ -4,9 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonsterTradingCardsGame.DAL.Connections;
 using MonsterTradingCardsGame.Models;
 
-namespace MonsterTradingCardsGame.DAL
+namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserRepository
     {

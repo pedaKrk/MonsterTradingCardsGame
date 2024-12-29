@@ -1,6 +1,6 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Token;
+﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.BusinessLogic.Token;
 using MonsterTradingCardsGame.Database;
-using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;

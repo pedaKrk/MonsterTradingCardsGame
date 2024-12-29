@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.Exceptions
+namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
     internal class ConflictException : Exception
     {

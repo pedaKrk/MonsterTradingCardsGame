@@ -1,4 +1,4 @@
-﻿using MonsterTradingCardsGame.Exceptions;
+﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
