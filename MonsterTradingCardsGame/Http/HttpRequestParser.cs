@@ -1,4 +1,4 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Token;
+﻿using MonsterTradingCardsGame.BusinessLogic.Services;
 using MonsterTradingCardsGame.Database;
 using MonsterTradingCardsGame.Exceptions;
 using MonsterTradingCardsGame.Models;
