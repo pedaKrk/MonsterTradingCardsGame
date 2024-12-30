@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -21,14 +22,17 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("The provided deck did not include the required amount of cards");
                 }
 
+                StackRepository stackRepository = new();
+                DeckRepository deckRepository = new();
+
                 var cards = new List<Card>(Deck.DeckSize);
                 foreach (var cardId in cardIds)
                 {
-                    Card? card = user.Stack.GetCardById(cardId) ?? throw new BadRequestException("At least one of the provided cards does not belong to the user or is not available.");
+                    Card? card = stackRepository.GetCardFromUser(user.Id, cardId) ?? throw new BadRequestException("At least one of the provided cards does not belong to the user or is not available.");
                     cards.Add(card);
                 }
 
-                user.Deck.AddCards(cards);
+                deckRepository.AddCardsToUser(user.Id, cards);
 
                 await responseHandler.SendOkAsync();
             }
@@ -52,7 +56,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var cards = user.Deck.GetCards();
+                DeckRepository deckRepository = new();
+                var cards = deckRepository.GetDeckFromUser(user.Id);
 
                 if (cards.Count == 0)
                 {

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class TradingDeal(TradingDealDTO tradingDealDTO, string username)
+    internal class TradingDeal(string id, string cardId, double price, string username)
     {
-        public string Id { get; } = tradingDealDTO.Id;
-        public string CardId { get; } = tradingDealDTO.CardId;
-        public double Price { get; } = tradingDealDTO.Price;
+        public string Id { get; } = id;
+        public string CardId { get; } = cardId;
+        public double Price { get; } = price;
         public string Username { get; } = username;
     }
 }

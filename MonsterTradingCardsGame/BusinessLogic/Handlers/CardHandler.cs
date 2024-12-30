@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -13,8 +14,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                List<Card> cards = user.Stack.GetAllCards();
-                cards.AddRange(user.Deck.GetCards());
+                StackRepository stackRepository = new();
+                List<Card> cards = new(stackRepository.GetAllCardsFromUser(user.Id));
+
+                DeckRepository deckRepository = new();
+                cards.AddRange(deckRepository.GetDeckFromUser(user.Id));
 
                 if (cards.Count == 0)
                 {

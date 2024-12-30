@@ -6,7 +6,8 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
     {
         bool TradingDealExists(string tradingDealId);
         void AddTradingDeal(TradingDeal tradingDeal);
-        TradingDeal GetTradingDeal(string tradingDealId);
+        TradingDeal? GetTradingDeal(string tradingDealId);
+        List<TradingDeal> GetAllTradingDeals();
         void DeleteTradingDeal(string tradingDealId);
     }
 }

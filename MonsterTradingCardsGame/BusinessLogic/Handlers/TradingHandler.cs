@@ -1,5 +1,5 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
-using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -15,17 +15,18 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
                 var tradingDealDTO = JsonSerializer.Deserialize<TradingDealDTO>(requestbody) ?? throw new BadRequestException("bad json.");
+                var tradingDeal = new TradingDeal(tradingDealDTO.Id, tradingDealDTO.CardId, tradingDealDTO.Price, user.Username);
 
-                var tradingDeal = new TradingDeal(tradingDealDTO, user.Username);
+                StackRepository stackRepository = new();
+                var card = stackRepository.GetCardFromUser(user.Id, tradingDeal.CardId) ?? throw new ForbiddenException("the user doesn't own this card.");
 
-                var card = user.Stack.GetCardById(tradingDeal.CardId) ?? throw new ForbiddenException("the user doesn't own this card.");
-
-                if (InMemoryDatabase.TradingDealExists(tradingDeal.Id))
+                TradingDealRepository tradingDealRepository = new();
+                if (tradingDealRepository.TradingDealExists(tradingDeal.Id))
                 {
                     throw new ConflictException("tradingdeal already exists");
                 }
 
-                InMemoryDatabase.AddTradingDeal(tradingDeal);
+                tradingDealRepository.AddTradingDeal(tradingDeal);
 
                 await responseHandler.SendCreatedAsync();
             }
@@ -57,7 +58,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var tradingDeals = InMemoryDatabase.TradingDeals ?? throw new InternalServerException();
+                TradingDealRepository tradingDealRepository = new();
+                var tradingDeals = tradingDealRepository.GetAllTradingDeals();
                 if (tradingDeals.Count == 0)
                 {
                     await responseHandler.SendNoContentAsync();
@@ -95,13 +97,16 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("tradingDealId is required.");
                 }
 
-                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
-                if (!user.Stack.HasCard(tradingDeal.CardId))
+                TradingDealRepository tradingDealRepository = new();
+                var tradingDeal = tradingDealRepository.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
+
+                StackRepository stackRepository = new();
+                if (!stackRepository.UserHasCard(user.Id, tradingDeal.CardId))
                 {
                     throw new ForbiddenException("The deal contains a card that is not owned by the user.");
                 }
 
-                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
+                tradingDealRepository.DeleteTradingDeal(tradingDealId);
 
                 await responseHandler.SendOkAsync();
             }
@@ -134,15 +139,19 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("tradingDealId is required.");
                 }
 
-                var tradingDeal = InMemoryDatabase.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
+                TradingDealRepository tradingDealRepository = new();
+                var tradingDeal = tradingDealRepository.GetTradingDeal(tradingDealId) ?? throw new NotFoundException("no tradingDeal with this id found.");
 
                 if (user.Username == tradingDeal.Username)
                 {
                     throw new ForbiddenException("user can't trade with self.");
                 }
 
-                var offerer = InMemoryDatabase.GetUser(tradingDeal.Username) ?? throw new InternalServerException();
-                var card = offerer.Stack.GetCardById(tradingDeal.CardId) ?? throw new ForbiddenException("offerer doesn't own this card.");
+                UserRepository userRepository = new();
+                var offerer = userRepository.GetUserByUsername(tradingDeal.Username) ?? throw new InternalServerException();
+
+                StackRepository stackRepository = new();
+                var card = stackRepository.GetCardFromUser(user.Id, tradingDeal.CardId) ?? throw new ForbiddenException("offerer doesn't own this card.");
 
                 if (user.Coins - tradingDeal.Price < 0)
                 {
@@ -150,11 +159,15 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 }
 
                 user.Coins -= tradingDeal.Price;
-                offerer.Coins += tradingDeal.Price;
-                offerer.Stack.RemoveCard(card);
-                user.Stack.AddCard(card);
+                userRepository.UpdateUser(user);
 
-                InMemoryDatabase.DeleteTradingDeal(tradingDealId);
+                offerer.Coins += tradingDeal.Price;
+                userRepository.UpdateUser(offerer);
+
+                stackRepository.RemoveCard(user.Id, card.Id);
+                stackRepository.AddCard(user.Id, card.Id);
+
+                tradingDealRepository.DeleteTradingDeal(tradingDealId);
 
                 await responseHandler.SendOkAsync();
             }

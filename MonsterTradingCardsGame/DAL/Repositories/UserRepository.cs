@@ -34,7 +34,6 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 
             userDataRepository.AddUserData(user.Id, user.Data);
             userStatsRepository.AddUserStats(user.Id, user.Stats);
-            //Also fill Stack and Deck in user repo
         }
 
         public List<User> GetAllUsers()
