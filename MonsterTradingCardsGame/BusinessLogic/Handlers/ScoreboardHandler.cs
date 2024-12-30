@@ -1,5 +1,5 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
-using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -14,14 +14,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var authorizedUser = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                List<UserStats> scoreboard = [];
+                UserStatsRepository userStatsRepository = new();
 
-                var users = InMemoryDatabase.GetAllUsers();
-                foreach (var user in users)
-                {
-                    scoreboard.Add(user.Stats);
-                }
-
+                List<UserStats> scoreboard = new(userStatsRepository.GetAllUserStats());
                 scoreboard.Sort((x, y) => y.Elo.CompareTo(x.Elo));
 
                 await responseHandler.SendOkAsync(new { scoreboard });

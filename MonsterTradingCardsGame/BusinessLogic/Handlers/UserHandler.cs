@@ -1,6 +1,6 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
 using MonsterTradingCardsGame.BusinessLogic.Services;
-using MonsterTradingCardsGame.Database;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -20,13 +20,14 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("bad json.");
                 }
 
-                if (InMemoryDatabase.UserExists(newUser.Username))
+                UserRepository userRepository = new();
+                if (userRepository.UserExists(newUser.Username))
                 {
                     throw new ConflictException("user already exists.");
                 }
 
                 Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
-                InMemoryDatabase.AddUser(newUser);
+                userRepository.AddUser(newUser);
 
                 await responseHandler.SendCreatedAsync();
             }
@@ -55,7 +56,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("no username or password provided.");
                 }
 
-                var user = InMemoryDatabase.GetUser(loginUser.Username);
+                UserRepository userRepository = new();
+                var user = userRepository.GetUserByUsername(loginUser.Username);
                 if (user == null || loginUser.Password != user.Password)
                 {
                     throw new UnauthorizedException("wrong credentials.");
@@ -98,8 +100,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 {
                     throw new BadRequestException("username is required.");
                 }
-
-                var user = InMemoryDatabase.GetUser(username) ?? throw new NotFoundException("user not found.");
+                
+                UserRepository userRepository = new();
+                var user = userRepository.GetUserByUsername(username) ?? throw new NotFoundException("user not found.");
 
                 await responseHandler.SendOkAsync(new { user.Data });
             }
@@ -132,7 +135,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new BadRequestException("username is required.");
                 }
 
-                var user = InMemoryDatabase.GetUser(username) ?? throw new NotFoundException("user not found.");
+                UserRepository userRepository = new();
+                var user = userRepository.GetUserByUsername(username) ?? throw new NotFoundException("user not found.");
 
                 //implement RoleService
                 /*
@@ -148,7 +152,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 user.Data.Update(newUserData);
                 user.Stats.Name = user.Data.Name;
 
-                await responseHandler.SendOkAsync();
+                userRepository.UpdateUser(user);
+
+                await responseHandler.SendOkAsync(new {user.Data});
             }
             catch (JsonException ex)
             {

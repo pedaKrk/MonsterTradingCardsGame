@@ -30,6 +30,38 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             dbCommand.ExecuteNonQuery();
         }
 
+        public List<UserStats> GetAllUserStats()
+        {
+            using IDbCommand dbCommand = dal.CreateCommand("""
+                SELECT Id, UserId, Elo, Wins, Losses 
+                FROM UserStats
+            """);
+
+            List<UserStats> userStatsList = new List<UserStats>();
+
+            using IDataReader reader = dbCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                string? name = reader["Name"].ToString();
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    continue;
+                }
+
+                var userStats = new UserStats(name)
+                {
+                    Elo = Convert.ToInt32(reader["Elo"]),
+                    Wins = Convert.ToInt32(reader["Wins"]),
+                    Losses = Convert.ToInt32(reader["Losses"])
+                };
+
+                userStatsList.Add(userStats);
+            }
+
+            return userStatsList;
+        }
+
         public UserStats? GetUserStats(int userId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""

@@ -7,5 +7,6 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
         void AddUserStats(int userId, UserStats userStats);
         void UpdateUserStats(int userId, UserStats userStats);
         UserStats? GetUserStats(int userId);
+        List<UserStats> GetAllUserStats(); 
     }
 }

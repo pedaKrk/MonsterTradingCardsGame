@@ -1,12 +1,7 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Services;
-using MonsterTradingCardsGame.Database;
-using MonsterTradingCardsGame.Exceptions;
+﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.BusinessLogic.Services;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Http
 {
@@ -65,11 +60,12 @@ namespace MonsterTradingCardsGame.Http
 
         public static User AuthenticateAndGetUser(Headers headers)
         {
+            UserRepository userRepository = new();
             string? authorizationToken = ReadAuthorizationHeader(headers) ?? throw new BadRequestException("bad request");
             string? username = TokenService.GetUsernameByToken(authorizationToken) ?? throw new UnauthorizedException("user not found.");
 
             Console.WriteLine($"{username}: {authorizationToken}");
-            return InMemoryDatabase.GetUser(username) ?? throw new UnauthorizedException("user not found.");
+            return userRepository.GetUserByUsername(username) ?? throw new UnauthorizedException("user not found.");
         }
     }
 }
