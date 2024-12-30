@@ -4,8 +4,8 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
 {
     internal interface IPackageRepository
     {
-        void CreatePackage(List<Card> cards);
-        List<Card> GetPackage();
-        void DeletePackage(string packageId);
+        void CreatePackage(Package package);
+        Package? AcquirePackage();
+        void DeletePackage(string cardId);
     }
 }

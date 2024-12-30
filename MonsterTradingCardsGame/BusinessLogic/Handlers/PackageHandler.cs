@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
@@ -31,7 +32,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 };
 
                 var cards = JsonSerializer.Deserialize<List<Card>>(requestBody, options);
-                if (cards == null || cards.Count == 0)
+                if (cards == null || cards.Count != Package.Size)
                 {
                     throw new BadRequestException("bad json.");
                 }
@@ -40,8 +41,10 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 //'409':
                 //description: At least one card in the packages already exists
 
+                PackageRepository packageRepository = new();
+
                 var package = new Package(cards);
-                //InMemoryDatabase.AddPackage(package);
+                packageRepository.CreatePackage(package);
 
                 await responseHandler.SendCreatedAsync();
             }
@@ -70,15 +73,24 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new ForbiddenException("not enough money to acquire a package!");
                 }
 
-                Package? package = null;//InMemoryDatabase.AcquirePackage();
+                PackageRepository packageRepository = new();
+                Package? package = packageRepository.AcquirePackage();
                 if (package == null)
                 {
                     await responseHandler.SendNotFoundAsync();
                     return;
                 }
 
+                UserRepository userRepository = new();
+                StackRepository stackRepository = new();
+
                 user.Coins -= Package.Price;
-                user.Stack.AddCards(package.Open());
+                userRepository.UpdateUser(user);
+
+                foreach (var card in package.Pack)
+                {
+                    stackRepository.AddCard(user.Id, card.Id);
+                }
 
                 await responseHandler.SendOkAsync();
             }

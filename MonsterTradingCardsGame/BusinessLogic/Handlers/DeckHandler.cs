@@ -4,7 +4,6 @@ using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
 
-
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
     internal class DeckHandler
