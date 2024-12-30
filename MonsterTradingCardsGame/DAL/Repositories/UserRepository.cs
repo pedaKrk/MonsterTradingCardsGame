@@ -1,89 +1,162 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MonsterTradingCardsGame.DAL.Connections;
+﻿using MonsterTradingCardsGame.DAL.Connections;
+using MonsterTradingCardsGame.DAL.Interfaces;
 using MonsterTradingCardsGame.Models;
+using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Repositories
 {
-    internal class UserRepository
+    internal class UserRepository : IUserRepository
     {
         private readonly DataLayer dal;
-
-        public UserRepository()
-        {
+        private readonly UserDataRepository userDataRepository;
+        private readonly UserStatsRepository userStatsRepository;
+        public UserRepository() 
+        { 
             dal = DataLayer.Instance;
+            userDataRepository = new UserDataRepository();
+            userStatsRepository = new UserStatsRepository();
         }
 
-        public void Add(User user)
+        public void AddUser(User user)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-            INSERT INTO person (name, age, description)
-            VALUES (@name, @age, @description)
-            RETURNING id
+                INSERT INTO Users (Username, Password, Coins, Role)
+                VALUES (@Username, @Password, @Coins, @Role)
+                RETURNING Id
             """);
-            DataLayer.AddParameterWithValue(dbCommand, "@name", DbType.String, user.Username);
 
-            //dbCommand.ExecuteNonQuery(); // does not return the id
+            DataLayer.AddParameterWithValue(dbCommand, "@Username", DbType.String, user.Username);
+            DataLayer.AddParameterWithValue(dbCommand, "@Password", DbType.String, user.Password);
+            DataLayer.AddParameterWithValue(dbCommand, "@Coins", DbType.Double, user.Coins);
+            DataLayer.AddParameterWithValue(dbCommand, "@Role", DbType.String, user.Role.ToString());
+
             user.Id = (int)(dbCommand.ExecuteScalar() ?? 0);
+
+            userDataRepository.AddUserData(user.Id, user.Data);
+            userStatsRepository.AddUserStats(user.Id, user.Stats);
         }
 
-        public List<User> GetAll()
+        public List<User> GetAllUsers()
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-            SELECT id, name, age, description 
-            FROM person 
+                SELECT Id, Username, Password, Coins, Role 
+                FROM Users
             """);
 
-            List<User> result = [];   // new List<Person>()
+            List<User> users = [];
+
             using IDataReader reader = dbCommand.ExecuteReader();
             while (reader.Read())
             {
-                //result.Add(new User());
+                string? username = reader["Username"].ToString();
+                string? password = reader["Password"].ToString();
+                string? role = reader["Role"].ToString();
+
+                if(String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(role))
+                {
+                    continue;
+                }
+
+                var user = new User(username, password)
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Coins = Convert.ToDouble(reader["Coins"]),
+                    Role = Enum.Parse<Role>(role)
+                };
+
+                UserData? userData = userDataRepository.GetUserData(user.Id);
+                UserStats? userStats = userStatsRepository.GetUserStats(user.Id);
+
+                if (userData == null || userStats == null)
+                {
+                    continue;
+                }
+
+                user.Data = userData;
+                user.Stats = userStats;
+
+                users.Add(user);
             }
-            return result;
+
+            return users;
         }
 
-        public User? Get(int id)
+        public User? GetUserByUsername(string name)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-            SELECT id, name, age, description 
-            FROM person 
-            WHERE id = @id
+                SELECT Id, Username, Password, Coins, Role
+                FROM Users 
+                WHERE Username = @Username
             """);
-            DataLayer.AddParameterWithValue(dbCommand, "@id", DbType.Int32, id);
+
+            DataLayer.AddParameterWithValue(dbCommand, "@Username", DbType.String, name);
 
             using IDataReader reader = dbCommand.ExecuteReader();
             if (reader.Read())
             {
-                //return new User()
+                string? username = reader["Username"].ToString();
+                string? password = reader["Password"].ToString();
+                string? role = reader["Role"].ToString();
+
+                if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(role))
+                {
+                    return null;
+                }
+
+                var user = new User(username, password)
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Coins = Convert.ToDouble(reader["Coins"]),
+                    Role = Enum.Parse<Role>(role)
+                };
+
+                UserData? userData = userDataRepository.GetUserData(user.Id);
+                UserStats? userStats = userStatsRepository.GetUserStats(user.Id);
+
+                if(userData == null || userStats == null)
+                {
+                    return null;
+                }
+
+                user.Data = userData;
+                user.Stats = userStats;
+
+                return user;
             }
+
             return null;
         }
 
-        public void Update(User user)
+        public void UpdateUser(User user)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-            UPDATE person 
-            SET name = @name, age = @age, description = @description
-            WHERE id = @id
+                UPDATE Users
+                SET Password = @Password, Coins = @Coins, Role = @Role
+                WHERE Id = @Id
             """);
-            DataLayer.AddParameterWithValue(dbCommand, "@name", DbType.String, user.Username);
-            DataLayer.AddParameterWithValue(dbCommand, "@id", DbType.Int32, user.Id);
+
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Int32, user.Id);
+            DataLayer.AddParameterWithValue(dbCommand, "@Password", DbType.String, user.Password);
+            DataLayer.AddParameterWithValue(dbCommand, "@Coins", DbType.Double, user.Coins);
+            DataLayer.AddParameterWithValue(dbCommand, "@Role", DbType.String, user.Role.ToString());
+
             dbCommand.ExecuteNonQuery();
+
+            userDataRepository.UpdateUserData(user.Id, user.Data);
+            userStatsRepository.UpdateUserStats(user.Id, user.Stats);
         }
 
-        public void Delete(int id)
+        public bool UserExists(string username)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-            DELETE FROM person 
-            WHERE id = @id
+                SELECT COUNT(*) 
+                FROM Users 
+                WHERE Username = @Username
             """);
-            DataLayer.AddParameterWithValue(dbCommand, "@id", DbType.Int32, id);
-            dbCommand.ExecuteNonQuery();
+
+            DataLayer.AddParameterWithValue(dbCommand, "@Username", DbType.String, username);
+            var result = dbCommand.ExecuteScalar();
+            return Convert.ToInt32(result) > 0;
         }
     }
 }

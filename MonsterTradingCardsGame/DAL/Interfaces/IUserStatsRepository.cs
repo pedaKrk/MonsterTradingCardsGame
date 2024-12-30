@@ -4,8 +4,8 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
 {
     internal interface IUserStatsRepository
     {
-        void CreateUserStats(UserStats userStats);
-        void UpdateUserStats(UserStats userStats);
-        void GetUserStats(string userId);
+        void AddUserStats(int userId, UserStats userStats);
+        void UpdateUserStats(int userId, UserStats userStats);
+        UserStats? GetUserStats(int userId);
     }
 }
