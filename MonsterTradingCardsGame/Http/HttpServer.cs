@@ -53,7 +53,7 @@ namespace MonsterTradingCardsGame.Http
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _deleteRoutes = new()
         {
-            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleDeleteTradingDealAsync(responseHandler, headers, requestBody, parameters?["tradingdealid"]) }
+            { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleDeleteTradingDealAsync(responseHandler, headers, parameters?["tradingdealid"]) }
         };
 
         public static void Run()
