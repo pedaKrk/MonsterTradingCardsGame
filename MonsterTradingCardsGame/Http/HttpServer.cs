@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Net;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 using MonsterTradingCardsGame.Models;
-using System.Text.Json;
 using MonsterTradingCardsGame.BusinessLogic.Handlers;
 
 namespace MonsterTradingCardsGame.Http
@@ -20,7 +13,7 @@ namespace MonsterTradingCardsGame.Http
         /*
          * ToDo: - Battle implementieren
          *       - RoleSystem
-         *       - DB
+         *       - DAL singelton verwenden
          *       - UnitTests
          */
 
