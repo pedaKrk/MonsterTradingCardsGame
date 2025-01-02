@@ -1,9 +1,9 @@
 ﻿
 namespace MonsterTradingCardsGame.Models
 {
-    internal class Card(string id, string name, double damage, Element element, CardType cardType)
+    internal class Card(Guid id, string name, double damage, Element element, CardType cardType)
     {
-        public string Id { get; } = id;
+        public Guid Id { get; } = id;
         public double Damage { get; } = damage;
         public string Name { get; } = name;
         public Element Element { get; } = element;
