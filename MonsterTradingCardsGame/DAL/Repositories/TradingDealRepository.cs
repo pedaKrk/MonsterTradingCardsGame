@@ -7,20 +7,15 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class TradingDealRepository : ITradingDealRepository
     {
-        private readonly DataLayer dal;
+        private readonly DataLayer dal = new();
 
-        public TradingDealRepository()
-        {
-            dal = DataLayer.Instance;
-        }
-
-        public bool TradingDealExists(string tradingDealId)
+        public bool TradingDealExists(Guid tradingDealId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT COUNT(*) FROM TradingDeals WHERE Id = @Id
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.String, tradingDealId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Guid, tradingDealId);
 
             var result = dbCommand.ExecuteScalar();
             return Convert.ToInt32(result) > 0;
@@ -33,15 +28,15 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 VALUES (@Id, @CardId, @Price, @Username)
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.String, tradingDeal.Id);
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, tradingDeal.CardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Guid, tradingDeal.Id);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, tradingDeal.CardId);
             DataLayer.AddParameterWithValue(dbCommand, "@Price", DbType.Double, tradingDeal.Price);
             DataLayer.AddParameterWithValue(dbCommand, "@Username", DbType.String, tradingDeal.Username);
 
             dbCommand.ExecuteNonQuery();
         }
 
-        public TradingDeal? GetTradingDeal(string tradingDealId)
+        public TradingDeal? GetTradingDeal(Guid tradingDealId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT Id, CardId, Price, Username
@@ -49,7 +44,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 WHERE Id = @Id
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.String, tradingDealId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Guid, tradingDealId);
 
             using IDataReader reader = dbCommand.ExecuteReader();
             if (reader.Read())
@@ -64,8 +59,8 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 }
 
                 return new TradingDeal(
-                    id,
-                    cardId,
+                    Guid.Parse(id),
+                    Guid.Parse(cardId),
                     Convert.ToDouble(reader["Price"]),
                     username
                 );
@@ -81,7 +76,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 FROM TradingDeals
             """);
 
-            List<TradingDeal> tradingDeals = new List<TradingDeal>();
+            List<TradingDeal> tradingDeals = [];
 
             using IDataReader reader = dbCommand.ExecuteReader();
             while (reader.Read())
@@ -96,8 +91,8 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 }
 
                 tradingDeals.Add(new TradingDeal(
-                    id,
-                    cardId,
+                    Guid.Parse(id),
+                    Guid.Parse(cardId),
                     Convert.ToDouble(reader["Price"]),
                     username
                 ));
@@ -107,13 +102,13 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             return tradingDeals;
         }
 
-        public void DeleteTradingDeal(string tradingDealId)
+        public void DeleteTradingDeal(Guid tradingDealId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 DELETE FROM TradingDeals WHERE Id = @Id
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.String, tradingDealId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Guid, tradingDealId);
 
             dbCommand.ExecuteNonQuery();
         }

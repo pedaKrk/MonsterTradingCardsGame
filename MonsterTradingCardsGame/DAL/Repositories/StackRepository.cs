@@ -7,13 +7,8 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class StackRepository : IStackRepository
     {
-        private readonly DataLayer dal;
-
-        public StackRepository()
-        {
-            dal = DataLayer.Instance;
-        }
-        public void AddCard(int userId, string cardId)
+        private readonly DataLayer dal = new();
+        public void AddCard(int userId, Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 INSERT INTO Stacks (UserId, CardId)
@@ -21,8 +16,8 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             """
             );
 
-            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.String, userId);
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, cardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, cardId);
 
             dbCommand.ExecuteNonQuery();
         }
@@ -36,7 +31,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 WHERE s.UserId = @UserId
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.String, userId);
+            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
 
             List<Card> cards = [];
 
@@ -54,7 +49,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 }
 
                 var card = new Card(
-                    id,
+                    Guid.Parse(id),
                     name,
                     Convert.ToDouble(reader["Damage"]),
                     Enum.Parse<Element>(element),
@@ -67,7 +62,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             return cards;
         }
 
-        public Card? GetCardFromUser(int userId, string cardId)
+        public Card? GetCardFromUser(int userId, Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT c.Id, c.Name, c.Damage, c.Element, c.CardType
@@ -77,7 +72,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, cardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, cardId);
 
             using IDataReader reader = dbCommand.ExecuteReader();
             if (reader.Read())
@@ -92,8 +87,8 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                     return null;
                 }
 
-                var card = new Card(
-                    id,
+                return new Card(
+                    Guid.Parse(id),
                     name,
                     Convert.ToDouble(reader["Damage"]),
                     Enum.Parse<Element>(element),
@@ -104,20 +99,20 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             return null;
         }
 
-        public void RemoveCard(int userId, string cardId)
+        public void RemoveCard(int userId, Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 DELETE FROM Stacks 
                 WHERE UserId = @UserId AND CardId = @CardId
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.String, userId);
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, cardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, cardId);
 
             dbCommand.ExecuteNonQuery();
         }
 
-        public bool UserHasCard(int userId, string cardId)
+        public bool UserHasCard(int userId, Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT COUNT(*) 
@@ -126,7 +121,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, cardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, cardId);
 
             var result = dbCommand.ExecuteScalar();
             return Convert.ToInt32(result) > 0;

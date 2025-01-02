@@ -6,6 +6,6 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
     {
         void CreatePackage(Package package);
         Package? AcquirePackage();
-        void DeletePackage(string cardId);
+        void DeletePackage(Guid cardId);
     }
 }

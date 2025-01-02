@@ -7,12 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class CardRepository : ICardRepository
     {
-        private readonly DataLayer dal;
-
-        public CardRepository()
-        {
-            dal = DataLayer.Instance;
-        }
+        private readonly DataLayer dal = new();
 
         public void CreateCard(Card card)
         {
@@ -21,7 +16,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 VALUES (@Id, @Name, @Damage, @Element, @CardType)
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.String, card.Id);
+            DataLayer.AddParameterWithValue(dbCommand, "@Id", DbType.Guid, card.Id);
             DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, card.Name);
             DataLayer.AddParameterWithValue(dbCommand, "@Damage", DbType.Double, card.Damage);
             DataLayer.AddParameterWithValue(dbCommand, "@Element", DbType.String, card.Element.ToString());
@@ -30,7 +25,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             dbCommand.ExecuteNonQuery();
         }
 
-        public Card? GetCard(string cardId)
+        public Card? GetCard(Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT Id, Name, Damage, Element, CardType
@@ -38,7 +33,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 WHERE Id = @CardId
             """);
 
-            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.String, cardId);
+            DataLayer.AddParameterWithValue(dbCommand, "@CardId", DbType.Guid, cardId);
 
             using IDataReader reader = dbCommand.ExecuteReader();
             if (reader.Read())
@@ -54,7 +49,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 }
 
                 return new Card(
-                    id,
+                    Guid.Parse(id),
                     name,
                     Convert.ToDouble(reader["Damage"]),
                     Enum.Parse<Element>(element),

@@ -7,12 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserDataRepository : IUserDataRepository
     {
-        private readonly DataLayer dal;
-
-        public UserDataRepository()
-        {
-            dal = DataLayer.Instance;
-        }
+        private readonly DataLayer dal = new();
 
         public void AddUserData(int userId, UserData userData)
         {

@@ -4,10 +4,10 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
 {
     internal interface ITradingDealRepository
     {
-        bool TradingDealExists(string tradingDealId);
+        bool TradingDealExists(Guid tradingDealId);
         void AddTradingDeal(TradingDeal tradingDeal);
-        TradingDeal? GetTradingDeal(string tradingDealId);
+        TradingDeal? GetTradingDeal(Guid tradingDealId);
         List<TradingDeal> GetAllTradingDeals();
-        void DeleteTradingDeal(string tradingDealId);
+        void DeleteTradingDeal(Guid tradingDealId);
     }
 }

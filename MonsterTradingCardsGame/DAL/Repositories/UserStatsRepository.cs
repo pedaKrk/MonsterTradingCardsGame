@@ -7,22 +7,18 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserStatsRepository : IUserStatsRepository
     {
-        private readonly DataLayer dal;
-
-        public UserStatsRepository()
-        {
-            dal = DataLayer.Instance;
-        }
+        private readonly DataLayer dal = new();
 
         public void AddUserStats(int userId, UserStats userStats)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-                INSERT INTO UserStats (UserId, Elo, Wins, Losses)
-                VALUES (@UserId, @Elo, @Wins, @Losses)
-                RETURNING Id
-            """);
+            INSERT INTO UserStats (UserId, Name, Elo, Wins, Losses)
+            VALUES (@UserId, @Name, @Elo, @Wins, @Losses)
+            RETURNING Id
+        """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userStats.Name);  // Adding Name
             DataLayer.AddParameterWithValue(dbCommand, "@Elo", DbType.Int32, userStats.Elo);
             DataLayer.AddParameterWithValue(dbCommand, "@Wins", DbType.Int32, userStats.Wins);
             DataLayer.AddParameterWithValue(dbCommand, "@Losses", DbType.Int32, userStats.Losses);
@@ -33,11 +29,11 @@ namespace MonsterTradingCardsGame.DAL.Repositories
         public List<UserStats> GetAllUserStats()
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-                SELECT Id, UserId, Elo, Wins, Losses 
-                FROM UserStats
-            """);
+            SELECT Id, UserId, Name, Elo, Wins, Losses
+            FROM UserStats
+        """);
 
-            List<UserStats> userStatsList = new List<UserStats>();
+            List<UserStats> userStatsList = [];
 
             using IDataReader reader = dbCommand.ExecuteReader();
             while (reader.Read())
@@ -65,10 +61,10 @@ namespace MonsterTradingCardsGame.DAL.Repositories
         public UserStats? GetUserStats(int userId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-                SELECT Id, UserId, Elo, Wins, Losses
-                FROM UserStats
-                WHERE UserId = @UserId
-            """);
+            SELECT Id, UserId, Name, Elo, Wins, Losses
+            FROM UserStats
+            WHERE UserId = @UserId
+        """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
 
@@ -96,12 +92,13 @@ namespace MonsterTradingCardsGame.DAL.Repositories
         public void UpdateUserStats(int userId, UserStats userStats)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
-                UPDATE UserStats
-                SET Elo = @Elo, Wins = @Wins, Losses = @Losses
-                WHERE UserId = @UserId
-            """);
+            UPDATE UserStats
+            SET Name = @Name, Elo = @Elo, Wins = @Wins, Losses = @Losses
+            WHERE UserId = @UserId
+        """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
+            DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userStats.Name);
             DataLayer.AddParameterWithValue(dbCommand, "@Elo", DbType.Int32, userStats.Elo);
             DataLayer.AddParameterWithValue(dbCommand, "@Wins", DbType.Int32, userStats.Wins);
             DataLayer.AddParameterWithValue(dbCommand, "@Losses", DbType.Int32, userStats.Losses);
@@ -109,4 +106,5 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             dbCommand.ExecuteNonQuery();
         }
     }
+
 }

@@ -5,32 +5,15 @@ namespace MonsterTradingCardsGame.DAL.Connections
 {
     internal class DataLayer : IDisposable
     {
-        #region Singleton-Pattern
-        private static DataLayer instance;
-        public static DataLayer Instance
+        private readonly string connectionString = "Host=localhost;Database=monster_trading_cards_game;Username=postgres;Password=postgres;Persist Security Info=True";
+        private readonly IDbConnection connection;
+
+        public DataLayer()
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new DataLayer("Host=localhost;Database=mydb;Username=postgres;Password=postgres;Persist Security Info=True");
-                }
-                return instance;
-            }
-        }
-        #endregion
-
-
-        private readonly string connectionString;
-        private IDbConnection connection;
-
-        public DataLayer(string connectionString)
-        {
-            this.connectionString = connectionString;
             connection = new NpgsqlConnection(connectionString);
             connection.Open();
-
         }
+
         public void Dispose()
         {
             if (connection != null)
@@ -39,7 +22,6 @@ namespace MonsterTradingCardsGame.DAL.Connections
                 connection.Dispose();
             }
         }
-
 
         public IDbCommand CreateCommand(string commandText)
         {

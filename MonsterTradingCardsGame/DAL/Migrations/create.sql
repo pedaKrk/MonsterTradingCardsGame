@@ -11,6 +11,7 @@ CREATE TABLE Users (
 CREATE TABLE UserStats (
     Id SERIAL PRIMARY KEY,
     UserId INT NOT NULL,
+    Name VARCHAR(255) NOT NULL,
     Elo INT DEFAULT 1000,
     Wins INT DEFAULT 0,
     Losses INT DEFAULT 0,
@@ -69,62 +70,3 @@ CREATE TABLE Packages (
     CardId UUID NOT NULL,
     FOREIGN KEY (CardId) REFERENCES Cards(Id) ON DELETE CASCADE
 );
-
--- Insert sample data into Users table
-INSERT INTO Users (Username, Password, Coins, Role)
-VALUES 
-('player1', 'password1', 20, 'User'),
-('player2', 'password2', 30, 'User'),
-('admin', 'admin', 100, 'Admin');
-
--- Insert sample data into Cards table with UUID passed explicitly as a string
-INSERT INTO Cards (Id, Name, Damage, Element, CardType)
-VALUES 
-('550e8400-e29b-41d4-a716-446655440000', 'Fire Dragon', 50, 'Fire', 'Monster'),
-('550e8400-e29b-41d4-a716-446655440001', 'Water Wizard', 40, 'Water', 'Spell'),
-('550e8400-e29b-41d4-a716-446655440002', 'Earth Golem', 60, 'Normal', 'Monster'),
-('550e8400-e29b-41d4-a716-446655440003', 'Lightning Bolt', 30, 'Normal', 'Spell'),
-('550e8400-e29b-41d4-a716-446655440004', 'Tsunami', 35, 'Water', 'Spell');
-
--- Insert sample data into UserStats table
-INSERT INTO UserStats (UserId, Elo, Wins, Losses)
-VALUES 
-(1, 1200, 10, 5),
-(2, 1100, 8, 7),
-(3, 1500, 20, 2);
-
--- Insert sample data into UserData table
-INSERT INTO UserData (UserId, Name, Bio, Image)
-VALUES 
-(1, 'Player One', 'I love trading cards!', NULL),
-(2, 'Player Two', NULL, 'player2.png'),
-(3, 'Admin', 'Game administrator.', 'admin.png');
-
--- Insert sample data into Stacks table
-INSERT INTO Stacks (UserId, CardId)
-VALUES 
-(1, '550e8400-e29b-41d4-a716-446655440000'),
-(2, '550e8400-e29b-41d4-a716-446655440001'),
-(1, '550e8400-e29b-41d4-a716-446655440002');
-
--- Insert sample data into Decks table
-INSERT INTO Decks (UserId, CardId)
-VALUES 
-(1, '550e8400-e29b-41d4-a716-446655440000'),
-(2, '550e8400-e29b-41d4-a716-446655440001'),
-(1, '550e8400-e29b-41d4-a716-446655440002');
-
--- Insert sample data into TradingDeals table with passed UUID for CardId
-INSERT INTO TradingDeals (Id, CardId, Price, Username)
-VALUES 
-('550e8400-e29b-41d4-a716-446655440100', '550e8400-e29b-41d4-a716-446655440000', 15.5, 'player1'),
-('550e8400-e29b-41d4-a716-446655440101', '550e8400-e29b-41d4-a716-446655440001', 12.0, 'player2');
-
--- Insert sample data into Packages table
-INSERT INTO Packages (CardId)
-VALUES 
-('550e8400-e29b-41d4-a716-446655440000'), 
-('550e8400-e29b-41d4-a716-446655440001'), 
-('550e8400-e29b-41d4-a716-446655440002'),
-('550e8400-e29b-41d4-a716-446655440003'), 
-('550e8400-e29b-41d4-a716-446655440004');
