@@ -14,7 +14,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                var cardIds = JsonSerializer.Deserialize<List<string>>(requestBody) ?? throw new BadRequestException("bad json.");
+                var cardIds = JsonSerializer.Deserialize<List<Guid>>(requestBody) ?? throw new BadRequestException("bad json.");
 
                 if (cardIds.Count != Deck.DeckSize)
                 {
@@ -31,7 +31,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     cards.Add(card);
                 }
 
-                deckRepository.AddCardsToUser(user.Id, cards);
+                foreach(var card in cards)
+                {
+                    deckRepository.AddCard(user.Id, card.Id);
+                    stackRepository.RemoveCard(user.Id, card.Id);
+                }
 
                 await responseHandler.SendOkAsync();
             }
