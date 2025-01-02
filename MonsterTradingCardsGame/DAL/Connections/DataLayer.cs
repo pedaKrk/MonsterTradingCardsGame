@@ -1,16 +1,17 @@
-﻿using Npgsql;
+﻿using MonsterTradingCardsGame.DAL.Services;
+using Npgsql;
 using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Connections
 {
     internal class DataLayer : IDisposable
     {
-        private readonly string connectionString = "Host=localhost;Database=monster_trading_cards_game;Username=postgres;Password=postgres;Persist Security Info=True";
         private readonly IDbConnection connection;
 
         public DataLayer()
         {
-            connection = new NpgsqlConnection(connectionString);
+            var dbConfig = DatabaseConfigService.GetDatabaseConfig();
+            connection = new NpgsqlConnection(DatabaseConfigService.GetConnectionString(dbConfig));
             connection.Open();
         }
 
