@@ -142,7 +142,9 @@ namespace MonsterTradingCardsGame.Http
                 var pathParts = path.Split('/');
 
                 if (routeParts.Length != pathParts.Length)
+                {
                     continue;
+                }
 
                 var parameters = new Dictionary<string, string>();
                 var isMatch = true;
@@ -162,7 +164,9 @@ namespace MonsterTradingCardsGame.Http
                 }
 
                 if (isMatch)
+                {
                     return (route, parameters);
+                }
             }
 
             return (null, null);

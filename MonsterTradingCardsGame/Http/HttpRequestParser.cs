@@ -31,7 +31,10 @@ namespace MonsterTradingCardsGame.Http
 
         public static async Task<string> ReadRequestBodyAsync(StreamReader reader, int contentLength)
         {
-            if (contentLength == 0) return string.Empty;
+            if (contentLength == 0)
+            {
+                return string.Empty;
+            }
 
             var buffer = new char[contentLength];
             await reader.ReadBlockAsync(buffer, 0, contentLength);
