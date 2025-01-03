@@ -13,7 +13,6 @@ namespace MonsterTradingCardsGame.Http
         /*
          * ToDo: - Battle implementieren
          *       - RoleSystem
-         *       - DAL singelton verwenden
          *       - UnitTests
          */
 
