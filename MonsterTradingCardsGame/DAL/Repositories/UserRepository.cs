@@ -7,11 +7,9 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        private readonly DataLayer dal = new();
-        private readonly UserDataRepository userDataRepository = new();
-        private readonly UserStatsRepository userStatsRepository = new();
+        private readonly DataLayer dal = DataLayer.Instance;
 
-        public void AddUser(User user)
+        public int AddUser(User user)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""
                 INSERT INTO Users (Username, Password, Coins, Role)
@@ -26,8 +24,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 
             user.Id = (int)(dbCommand.ExecuteScalar() ?? 0);
 
-            userDataRepository.AddUserData(user.Id, user.Data);
-            userStatsRepository.AddUserStats(user.Id, user.Stats);
+            return user.Id;
         }
 
         public List<User> GetAllUsers()
@@ -46,7 +43,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 string? password = reader["Password"].ToString();
                 string? role = reader["Role"].ToString();
 
-                if(String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(role))
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
                 {
                     continue;
                 }
@@ -57,17 +54,6 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                     Coins = Convert.ToDouble(reader["Coins"]),
                     Role = Enum.Parse<Role>(role)
                 };
-
-                UserData? userData = userDataRepository.GetUserData(user.Id);
-                UserStats? userStats = userStatsRepository.GetUserStats(user.Id);
-
-                if (userData == null || userStats == null)
-                {
-                    continue;
-                }
-
-                user.Data = userData;
-                user.Stats = userStats;
 
                 users.Add(user);
             }
@@ -92,7 +78,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 string? password = reader["Password"].ToString();
                 string? role = reader["Role"].ToString();
 
-                if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password) || String.IsNullOrEmpty(role))
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
                 {
                     return null;
                 }
@@ -103,17 +89,6 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                     Coins = Convert.ToDouble(reader["Coins"]),
                     Role = Enum.Parse<Role>(role)
                 };
-
-                UserData? userData = userDataRepository.GetUserData(user.Id);
-                UserStats? userStats = userStatsRepository.GetUserStats(user.Id);
-
-                if(userData == null || userStats == null)
-                {
-                    return null;
-                }
-
-                user.Data = userData;
-                user.Stats = userStats;
 
                 return user;
             }
@@ -135,9 +110,6 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             DataLayer.AddParameterWithValue(dbCommand, "@Role", DbType.String, user.Role.ToString());
 
             dbCommand.ExecuteNonQuery();
-
-            userDataRepository.UpdateUserData(user.Id, user.Data);
-            userStatsRepository.UpdateUserStats(user.Id, user.Stats);
         }
 
         public bool UserExists(string username)

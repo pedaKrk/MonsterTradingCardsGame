@@ -4,7 +4,7 @@ namespace MonsterTradingCardsGame.DAL.Interfaces
 {
     internal interface IUserRepository
     {
-        void AddUser(User user);
+        int AddUser(User user);
         User? GetUserByUsername(string username);
         List<User> GetAllUsers();
         void UpdateUser(User user);

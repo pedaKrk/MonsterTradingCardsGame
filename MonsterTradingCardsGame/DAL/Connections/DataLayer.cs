@@ -6,6 +6,17 @@ namespace MonsterTradingCardsGame.DAL.Connections
 {
     internal class DataLayer : IDisposable
     {
+        #region Singleton-Pattern
+        private static DataLayer? instance;
+        public static DataLayer Instance
+        {
+            get
+            {
+                return instance ??= new DataLayer();
+            }
+        }
+        #endregion
+
         private readonly IDbConnection connection;
 
         public DataLayer()

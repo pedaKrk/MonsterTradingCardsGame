@@ -7,7 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserStatsRepository : IUserStatsRepository
     {
-        private readonly DataLayer dal = new();
+        private readonly DataLayer dal = DataLayer.Instance;
 
         public void AddUserStats(int userId, UserStats userStats)
         {
@@ -18,7 +18,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
         """);
 
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
-            DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userStats.Name);  // Adding Name
+            DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userStats.Name);
             DataLayer.AddParameterWithValue(dbCommand, "@Elo", DbType.Int32, userStats.Elo);
             DataLayer.AddParameterWithValue(dbCommand, "@Wins", DbType.Int32, userStats.Wins);
             DataLayer.AddParameterWithValue(dbCommand, "@Losses", DbType.Int32, userStats.Losses);

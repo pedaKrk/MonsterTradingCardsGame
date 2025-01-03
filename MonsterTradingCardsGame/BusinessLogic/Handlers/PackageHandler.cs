@@ -41,6 +41,12 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 //'409':
                 //description: At least one card in the packages already exists
 
+                CardRepository cardRepository = new();
+
+                foreach (var card in cards) {
+                    cardRepository.CreateCard(card);
+                }
+
                 PackageRepository packageRepository = new();
 
                 var package = new Package(cards);

@@ -7,14 +7,11 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class PackageRepository : IPackageRepository
     {
-        private readonly DataLayer dal = new();
-        private readonly CardRepository cardRepository = new();
+        private readonly DataLayer dal = DataLayer.Instance;
         public void CreatePackage(Package package)
         {
             foreach (var card in package.Pack)
             {
-                cardRepository.CreateCard(card);
-
                 using IDbCommand dbCommand = dal.CreateCommand("""
                     INSERT INTO Packages (CardId)
                     VALUES (@CardId)
@@ -40,36 +37,35 @@ namespace MonsterTradingCardsGame.DAL.Repositories
         {
             List<Card> cards = new(Package.Size);
 
-            using (IDbCommand dbCommand = dal.CreateCommand("""
+            using IDbCommand dbCommand = dal.CreateCommand("""
                 SELECT p.Id, c.Id AS CardId, c.Name, c.Damage, c.Element, c.CardType
                 FROM Packages p
                 JOIN Cards c ON p.CardId = c.Id
                 ORDER BY p.Id DESC
                 LIMIT 5
-            """))
-            using (IDataReader reader = dbCommand.ExecuteReader())
+            """);
+
+            using IDataReader reader = dbCommand.ExecuteReader();
+            while (reader.Read())
             {
-                while (reader.Read())
+                string? cardId = reader["CardId"].ToString();
+                string? name = reader["Name"].ToString();
+                string? element = reader["Element"].ToString();
+                string? cardType = reader["CardType"].ToString();
+
+                if (string.IsNullOrEmpty(cardId) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(element) || string.IsNullOrEmpty(cardType))
                 {
-                    string? cardId = reader["CardId"].ToString();
-                    string? name = reader["Name"].ToString();
-                    string? element = reader["Element"].ToString();
-                    string? cardType = reader["CardType"].ToString();
-
-                    if (string.IsNullOrEmpty(cardId) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(element) || string.IsNullOrEmpty(cardType))
-                    {
-                        return null;
-                    }
-
-                    cards.Add(new Card(
-                        Guid.Parse(cardId),
-                        name,
-                        Convert.ToDouble(reader["Damage"]),
-                        Enum.Parse<Element>(element),
-                        Enum.Parse<CardType>(cardType)
-                    ));
+                    return null;
                 }
-            }
+
+                cards.Add(new Card(
+                    Guid.Parse(cardId),
+                    name,
+                    Convert.ToDouble(reader["Damage"]),
+                    Enum.Parse<Element>(element),
+                    Enum.Parse<CardType>(cardType)
+                ));
+            }           
 
             if (cards.Count != Package.Size)
             {

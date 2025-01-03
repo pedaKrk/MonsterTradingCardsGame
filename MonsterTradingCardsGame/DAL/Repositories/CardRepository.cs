@@ -7,7 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class CardRepository : ICardRepository
     {
-        private readonly DataLayer dal = new();
+        private readonly DataLayer dal = DataLayer.Instance;
 
         public void CreateCard(Card card)
         {

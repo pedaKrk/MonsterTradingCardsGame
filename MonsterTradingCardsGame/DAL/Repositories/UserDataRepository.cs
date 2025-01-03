@@ -7,7 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class UserDataRepository : IUserDataRepository
     {
-        private readonly DataLayer dal = new();
+        private readonly DataLayer dal = DataLayer.Instance;
 
         public void AddUserData(int userId, UserData userData)
         {
@@ -16,7 +16,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 VALUES (@UserId, @Name, @Bio, @Image)
                 RETURNING Id
             """);
-            
+
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
             DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userData.Name);
             DataLayer.AddParameterWithValue(dbCommand, "@Bio", DbType.String, userData.Bio);
@@ -32,13 +32,13 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             FROM UserData
             WHERE UserId = @UserId
             """);
-            
+
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
 
             using IDataReader reader = dbCommand.ExecuteReader();
 
             if (reader.Read())
-             {
+            {
                 string? name = reader["Name"].ToString();
 
                 if (string.IsNullOrEmpty(name))
@@ -50,9 +50,9 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 {
                     Bio = reader["Bio"].ToString(),
                     Image = reader["Image"].ToString()
-                };   
+                };
             }
-            
+
             return null;
         }
 
@@ -63,13 +63,13 @@ namespace MonsterTradingCardsGame.DAL.Repositories
             SET Name = @Name, Bio = @Bio, Image = @Image
             WHERE UserId = @UserId
             """);
-            
+
             DataLayer.AddParameterWithValue(dbCommand, "@UserId", DbType.Int32, userId);
             DataLayer.AddParameterWithValue(dbCommand, "@Name", DbType.String, userData.Name);
             DataLayer.AddParameterWithValue(dbCommand, "@Bio", DbType.String, userData.Bio ?? string.Empty);
             DataLayer.AddParameterWithValue(dbCommand, "@Image", DbType.String, userData.Image ?? string.Empty);
-            
-            dbCommand.ExecuteNonQuery();       
+
+            dbCommand.ExecuteNonQuery();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class TradingDealRepository : ITradingDealRepository
     {
-        private readonly DataLayer dal = new();
+        private readonly DataLayer dal = DataLayer.Instance;
 
         public bool TradingDealExists(Guid tradingDealId)
         {

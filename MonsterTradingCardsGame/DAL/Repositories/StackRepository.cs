@@ -7,7 +7,7 @@ namespace MonsterTradingCardsGame.DAL.Repositories
 {
     internal class StackRepository : IStackRepository
     {
-        private readonly DataLayer dal = new();
+        private readonly DataLayer dal = DataLayer.Instance;
         public void AddCard(int userId, Guid cardId)
         {
             using IDbCommand dbCommand = dal.CreateCommand("""

@@ -27,7 +27,13 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 }
 
                 Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
-                userRepository.AddUser(newUser);
+                var userId = userRepository.AddUser(newUser);
+
+                UserDataRepository userDataRepository = new();
+                userDataRepository.AddUserData(userId, newUser.Data);
+
+                UserStatsRepository userStatsaRepository = new();
+                userStatsaRepository.AddUserStats(userId, newUser.Stats);
 
                 await responseHandler.SendCreatedAsync();
             }
@@ -104,7 +110,10 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 UserRepository userRepository = new();
                 var user = userRepository.GetUserByUsername(username) ?? throw new NotFoundException("user not found.");
 
-                await responseHandler.SendOkAsync(new { user.Data });
+                UserDataRepository userDataRepository = new();
+                var userData = userDataRepository.GetUserData(user.Id);
+
+                await responseHandler.SendOkAsync(new { userData });
             }
             catch (JsonException ex)
             {
@@ -152,7 +161,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 user.Data.Update(newUserData);
                 user.Stats.Name = user.Data.Name;
 
-                userRepository.UpdateUser(user);
+                UserDataRepository userDataRepository = new();
+                userDataRepository.UpdateUserData(user.Id, user.Data);
+
+                UserStatsRepository userStatsRepository = new();
+                userStatsRepository.UpdateUserStats(user.Id, user.Stats);
 
                 await responseHandler.SendOkAsync(new {user.Data});
             }
@@ -180,7 +193,10 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                await responseHandler.SendOkAsync(new { user.Stats });
+                UserStatsRepository userStatsRepository = new();
+                var userStats = userStatsRepository.GetUserStats(user.Id);
+
+                await responseHandler.SendOkAsync(new { userStats });
             }
             catch(JsonException ex)
             {
