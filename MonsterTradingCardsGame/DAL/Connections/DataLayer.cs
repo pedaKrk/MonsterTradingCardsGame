@@ -24,6 +24,7 @@ namespace MonsterTradingCardsGame.DAL.Connections
             var dbConfig = DatabaseConfigService.GetDatabaseConfig();
             connection = new NpgsqlConnection(DatabaseConfigService.GetConnectionString(dbConfig));
             connection.Open();
+            Console.WriteLine("Connected to Database.");
         }
 
         public void Dispose()
