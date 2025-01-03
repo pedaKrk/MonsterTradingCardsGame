@@ -1,7 +1,5 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MonsterTradingCardsGame.DAL.Configurations;
-using System.Text.Json;
 
 namespace MonsterTradingCardsGame.DAL.Services
 {
