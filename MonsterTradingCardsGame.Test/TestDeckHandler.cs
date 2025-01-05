@@ -4,7 +4,6 @@ using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 using NSubstitute;
-using NUnit.Framework;
 using System.Text.Json;
 
 namespace MonsterTradingCardsGame.Test

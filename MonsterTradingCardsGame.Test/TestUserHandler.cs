@@ -1,13 +1,11 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
 using MonsterTradingCardsGame.BusinessLogic.Handlers;
 using MonsterTradingCardsGame.BusinessLogic.Services;
-using MonsterTradingCardsGame.DAL.Interfaces;
 using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 using NSubstitute;
-using NUnit.Framework;
 
 namespace MonsterTradingCardsGame.Test
 {

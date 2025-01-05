@@ -5,7 +5,6 @@ using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Models;
 using NSubstitute;
-using NUnit.Framework;
 
 namespace MonsterTradingCardsGame.Test
 {
