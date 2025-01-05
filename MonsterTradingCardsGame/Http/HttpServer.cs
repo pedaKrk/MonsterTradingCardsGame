@@ -76,7 +76,6 @@ namespace MonsterTradingCardsGame.Http
         {
             try
             {
-                Console.WriteLine("Client connected");
                 using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
                 using var reader = new StreamReader(client.GetStream());
 
@@ -97,7 +96,6 @@ namespace MonsterTradingCardsGame.Http
             }
             finally
             {
-                Console.WriteLine("client disconnected");
                 client.Close();
             }
         }
