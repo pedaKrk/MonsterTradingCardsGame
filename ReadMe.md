@@ -7,6 +7,9 @@ https://github.com/pedaKrk/MonsterTradingCardsGame
 In appsettings.json DatabaseSettings setzen.
 Das create script befindet sich im DAL/Migrations Ordner.
 
+Es sollte alles funktionieren bis auf Battles.
+Curl Test Script ist im Root vom Projekt MonsterTradingCardsGame.
+
 ## Unique Feature
 Das Unique Feature, ist das überarbeitete Trading System.
 Durch das Hinzufügen von Preisen zu den jeweiligen Deals, entsteht eine eigene Economy
