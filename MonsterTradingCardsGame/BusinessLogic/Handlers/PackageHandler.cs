@@ -65,7 +65,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             }
         }
 
-        public static async Task HandleAcquirePackageAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody)
+        public static async Task HandleAcquirePackageAsync(HttpResponseHandler responseHandler, Headers headers)
         {
             try
             {

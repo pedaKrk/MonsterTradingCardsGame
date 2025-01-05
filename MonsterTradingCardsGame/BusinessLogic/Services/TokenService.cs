@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Services
 {
-    public class TokenService
+    public static class TokenService
     {
         private static readonly Dictionary<string, string> _userTokens = [];
         private static readonly Dictionary<string, string> _tokenToUser = [];
-        private const string TokenSuffix = "-mtcgToken";
+        private static readonly string TokenSuffix = "-mtcgToken";
 
         public static string GenerateToken(string username)
         {

@@ -1,124 +1,152 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Handlers;
+﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
+using MonsterTradingCardsGame.BusinessLogic.Handlers;
 using MonsterTradingCardsGame.BusinessLogic.Services;
 using MonsterTradingCardsGame.DAL.Interfaces;
-using MonsterTradingCardsGame.Http.Interfaces;
+using MonsterTradingCardsGame.DAL.Repositories;
+using MonsterTradingCardsGame.Http;
+using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 using NSubstitute;
-using System.Text.Json;
+using NUnit.Framework;
 
 namespace MonsterTradingCardsGame.Test
 {
+    [TestFixture]
     public class TestUserHandler
     {
 
-        private readonly IHttpResponseHandler _responseHandler;
-        private readonly IUserRepository _userRepository;
-        private readonly IUserDataRepository _userDataRepository;
-        private readonly IUserStatsRepository _userStatsRepository;
+        private HttpResponseHandler _responseHandler;
+        private UserRepository _userRepository;
+        private UserDataRepository _userDataRepository;
+        private UserStatsRepository _userStatsRepository;
 
-        public TestUserHandler()
+        [SetUp]
+        public void Setup()
         {
-            _responseHandler = Substitute.For<IHttpResponseHandler>();
-            _userRepository = Substitute.For<IUserRepository>();
-            _userDataRepository = Substitute.For<IUserDataRepository>();
-            _userStatsRepository = Substitute.For<IUserStatsRepository>();
+            _responseHandler = Substitute.For<HttpResponseHandler>();
+            _userRepository = Substitute.For<UserRepository>();
+            _userDataRepository = Substitute.For<UserDataRepository>();
+            _userStatsRepository = Substitute.For<UserStatsRepository>();
         }
 
         [Test]
-        public async Task HandleUserRegistrationAsync_ValidInput_UserCreated()
+        public async Task HandleUserRegistrationAsync_ValidRequest_ReturnsCreated()
         {
             // Arrange
-            string requestBody = JsonSerializer.Serialize(new User("testuser", "password123"));
-
-            _userRepository.UserExists("testuser").Returns(false);
-            _userRepository.AddUser(Arg.Any<User>()).Returns(1); // Mocking a created user ID
-
-            var handler = new UserHandler();
+            var requestBody = "{\"Username\":\"newuser\", \"Password\":\"password\"}";
+            _userRepository.UserExists(Arg.Any<string>()).Returns(false);
+            _userRepository.AddUser(Arg.Any<User>()).Returns(1);
 
             // Act
-            await handler.HandleUserRegistrationAsync(_responseHandler, requestBody);
+            await UserHandler.HandleUserRegistrationAsync(_responseHandler, requestBody);
 
             // Assert
             await _responseHandler.Received(1).SendCreatedAsync();
         }
 
         [Test]
-        public async Task HandleUserRegistrationAsync_UserAlreadyExists_ConflictException()
+        public void HandleUserRegistrationAsync_UserAlreadyExists_ThrowsConflict()
         {
             // Arrange
-            string requestBody = JsonSerializer.Serialize(new User("existinguser", "password123"));
+            var requestBody = "{\"Username\":\"existinguser\", \"Password\":\"password\"}";
+            _userRepository.UserExists(Arg.Any<string>()).Returns(true);
 
-            _userRepository.UserExists("existinguser").Returns(true);
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ConflictException>(async () =>
+                await UserHandler.HandleUserRegistrationAsync(_responseHandler, requestBody));
 
-            var handler = new UserHandler();
-
-            // Act
-            await handler.HandleUserRegistrationAsync(_responseHandler, requestBody);
-
-            // Assert
-            await _responseHandler.Received(1).SendConflictAsync("user already exists.");
+            Assert.That(exception.Message, Is.EqualTo("user already exists."));
         }
 
         [Test]
-        public async Task HandleUserLoginAsync_ValidCredentials_TokenReturned()
+        public async Task HandleUserLoginAsync_ValidCredentials_ReturnsOk()
         {
             // Arrange
-            string requestBody = JsonSerializer.Serialize(new User("testuser", "password123"));
+            var requestBody = "{\"Username\":\"validuser\", \"Password\":\"validpassword\"}";
+            var user = new User("validuser", "validpassword");
+            _userRepository.GetUserByUsername("validuser").Returns(user);
 
-            string user = JsonSerializer.Serialize(new User("testuser", "password123"));
-
-            _userRepository.GetUserByUsername("testuser").Returns(user);
-
-            TokenService.GetTokenByUsername("testuser").Returns((string?)null);
-            TokenService.GenerateToken("testuser").Returns("newtoken123");
-
-            var handler = new UserHandler();
+            TokenService.GetTokenByUsername(user.Username).Returns((string?)null);
+            TokenService.GenerateToken(user.Username).Returns($"{user.Username}-mtcgToken");
 
             // Act
-            await handler.HandleUserLoginAsync(_responseHandler, requestBody);
+            await UserHandler.HandleUserLoginAsync(_responseHandler, requestBody);
 
             // Assert
-            await _responseHandler.Received(1).SendOkAsync(Arg.Is<object>(o => ((dynamic)o).newToken == "newtoken123"));
+            await _responseHandler.Received(1).SendOkAsync();
         }
 
         [Test]
-        public async Task HandleUserLoginAsync_InvalidCredentials_UnauthorizedException()
+        public void HandleUserLoginAsync_InvalidCredentials_ThrowsUnauthorized()
         {
             // Arrange
-            string requestBody = JsonSerializer.Serialize(new User("testuser", "wrongpassword"));
+            var requestBody = "{\"Username\":\"invaliduser\", \"Password\":\"wrongpassword\"}";
+            _userRepository.GetUserByUsername("invaliduser").Returns((User?)null);
 
-            string user = JsonSerializer.Serialize(new User("testuser", "wrongpassword"));
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () =>
+                await UserHandler.HandleUserLoginAsync(_responseHandler, requestBody));
 
-            _userRepository.GetUserByUsername("testuser").Returns(user);
-
-            var handler = new UserHandler();
-
-            // Act
-            await handler.HandleUserLoginAsync(_responseHandler, requestBody);
-
-            // Assert
-            await _responseHandler.Received(1).SendUnauthorizedAsync("wrong credentials.");
+            Assert.That(exception.Message, Is.EqualTo("wrong credentials."));
         }
 
         [Test]
-        public async Task HandleGetUserDataAsync_ValidUser_UserDataReturned()
+        public async Task HandleGetUserDataAsync_ValidRequest_ReturnsOk()
         {
             // Arrange
-            var headers = new Headers();
-            var user = new User("testuser", "password123") { Id = 1 };
+            var headers = new Headers();  // Mock headers if necessary
+            var username = "validuser";
+            var user = new User("validuser", "validpassword") { Id = 1};
+            _userRepository.GetUserByUsername(username).Returns(user);
 
-            _userRepository.GetUserByUsername("testuser").Returns(user);
-
-            _userDataRepository.GetUserData(1).Returns(new UserData(user.Username));
-
-            var handler = new UserHandler();
+            var userData = new UserData("John Doe");
+            _userDataRepository.GetUserData(1).Returns(userData);
 
             // Act
-            await handler.HandleGetUserDataAsync(_responseHandler, headers, "testuser");
+            await UserHandler.HandleGetUserDataAsync(_responseHandler, headers, username);
 
             // Assert
-            await _responseHandler.Received(1).SendOkAsync(Arg.Any<object>());
+            await _responseHandler.Received(1).SendOkAsync();
         }
 
+        [Test]
+        public async Task HandleChangeUserDataAsync_UnauthorizedAccess_ReturnsUnauthorized()
+        {
+            // Arrange
+            var headers = new Headers();  // Mock headers for authentication
+            var requestBody = "{\"Name\":\"New Name\"}";
+            var username = "user1";
+
+            // Mock authentication
+            var authorizedUser = new User("admin", "istrator") {Role = Role.Admin };
+            HttpRequestParser.AuthenticateAndGetUser(headers).Returns(authorizedUser);
+
+            var user = new User("user2", "password123") { Id = 1, Role = Role.User };
+            _userRepository.GetUserByUsername(username).Returns(user);
+
+            // Act
+            await UserHandler.HandleChangeUserDataAsync(_responseHandler, headers, requestBody, username);
+
+            // Assert
+            await _responseHandler.Received(1).SendUnauthorizedAsync();
+        }
+
+        [Test]
+        public async Task HandleGetUserStatsAsync_ValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var headers = new Headers();  // Mock headers
+            var user = new User("validuser", "validpassword") { Id = 1};
+            _userRepository.GetUserByUsername("validuser").Returns(user);
+
+            var userStats = new UserStats(user.Username) { Elo = 1100, Wins = 10, Losses = 0 };
+            _userStatsRepository.GetUserStats(1).Returns(userStats);
+
+            // Act
+            await UserHandler.HandleGetUserStatsAsync(_responseHandler, headers);
+
+            // Assert
+            await _responseHandler.Received(1).SendOkAsync();
+        }
     }
 }

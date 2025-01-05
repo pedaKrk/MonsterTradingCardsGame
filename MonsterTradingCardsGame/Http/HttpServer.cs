@@ -23,7 +23,7 @@ namespace MonsterTradingCardsGame.Http
             { "/users", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleUserRegistrationAsync(responseHandler, requestBody) },
             { "/sessions", async (responseHandler, headers, requestBody, parameters) => await UserHandler.HandleUserLoginAsync(responseHandler, requestBody) },
             { "/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleCreatePackageAsync(responseHandler, headers, requestBody) },
-            { "/transactions/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers, requestBody) },
+            { "/transactions/packages", async (responseHandler, headers, requestBody, parameters) => await PackageHandler.HandleAcquirePackageAsync(responseHandler, headers) },
             { "/tradings", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleCreateTradeAsync(responseHandler, headers, requestBody) },
             { "/tradings/{tradingdealid}", async (responseHandler, headers, requestBody, parameters) => await TradingHandler.HandleAcceptTradingDealAsync(responseHandler, headers, parameters?["tradingdealid"]) },
             { "/battles", async (responseHandler, headers, requestBody, parameters) => await BattleHandler.JoinBattleAsync(responseHandler, headers) }
