@@ -18,6 +18,10 @@ namespace MonsterTradingCardsGame.Http.Models
         {
             return _headers.ContainsKey(key);
         }
+        public string? TryGetValue(string key)
+        {
+            return _headers.TryGetValue(key, out var value) ? value : null;
+        }
         public string GetValue(string key)
         {
             return _headers[key];

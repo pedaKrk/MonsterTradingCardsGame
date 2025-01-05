@@ -12,6 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonsterTradingCardsGame.Test", "MonsterTradingCardsGame.Test\MonsterTradingCardsGame.Test.csproj", "{E23E7108-3A9B-4009-A743-533785E0B47A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{6550AE59-5CD8-4E50-A632-51B1099C9CDE}"
+	ProjectSection(SolutionItems) = preProject
+		MonsterTradingCardsGame\ClassDiagram.cd = MonsterTradingCardsGame\ClassDiagram.cd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +34,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6550AE59-5CD8-4E50-A632-51B1099C9CDE} = {93C7D941-317C-4B3D-B7AC-43E274A57185}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6872268A-2AC5-43CC-BB42-9917D702B9D3}

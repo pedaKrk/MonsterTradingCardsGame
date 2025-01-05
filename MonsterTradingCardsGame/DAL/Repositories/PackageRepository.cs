@@ -72,11 +72,6 @@ namespace MonsterTradingCardsGame.DAL.Repositories
                 return null;
             }
 
-            foreach (Card card in cards)
-            {
-                DeletePackage(card.Id);
-            }
-
             return new Package(cards);
         }
     }

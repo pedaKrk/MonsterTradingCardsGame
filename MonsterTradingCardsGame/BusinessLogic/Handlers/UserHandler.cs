@@ -151,10 +151,9 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 var user = userRepository.GetUserByUsername(username) ?? throw new NotFoundException("user not found.");
 
 
-                if(authorizedUser.Role != Role.Admin || authorizedUser.Username != user.Username)
+                if(authorizedUser.Role != Role.Admin && authorizedUser.Username != user.Username)
                 {
-                    await responseHandler.SendUnauthorizedAsync();
-                    return;
+                    throw new UnauthorizedException("User doesn't own this account or is not admin");
                 }
 
                 var newUserData = JsonSerializer.Deserialize<UserData>(requestBody) ?? throw new BadRequestException("bad json.");

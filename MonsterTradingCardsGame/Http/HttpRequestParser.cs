@@ -47,7 +47,7 @@ namespace MonsterTradingCardsGame.Http
             const string AuthorizationHeaderKey = "Authorization";
             const string BearerPrefix = "Bearer";
 
-            string? authorizationHeaderValue = headers.GetValue(AuthorizationHeaderKey).Trim();
+            string? authorizationHeaderValue = headers.TryGetValue(AuthorizationHeaderKey);
 
             if (authorizationHeaderValue == null)
             {

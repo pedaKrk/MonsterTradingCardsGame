@@ -92,6 +92,7 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 
                 foreach (var card in package.Pack)
                 {
+                    packageRepository.DeletePackage(card.Id);
                     stackRepository.AddCard(user.Id, card.Id);
                 }
 

@@ -10,6 +10,8 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 
         public static async Task JoinBattleAsync(HttpResponseHandler responseHandler, Headers headers)
         {
+            await responseHandler.SendInternalServerErrorAsync();
+            return;
             //funktioniert nicht
             var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
