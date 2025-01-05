@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class Headers
+    public class Headers
     {
         private readonly Dictionary<string, string> _headers;
 

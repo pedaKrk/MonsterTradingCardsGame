@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Services
 {
-    internal class TokenService
+    public class TokenService
     {
         private static readonly Dictionary<string, string> _userTokens = [];
         private static readonly Dictionary<string, string> _tokenToUser = [];

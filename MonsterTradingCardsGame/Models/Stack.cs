@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class Stack
+    public class Stack
     {
         private readonly List<Card> _stack = [];
     }

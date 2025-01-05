@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Http
 {
-    internal class HttpResponseHandler
+    public class HttpResponseHandler
     {
         private readonly StreamWriter _writer;
 

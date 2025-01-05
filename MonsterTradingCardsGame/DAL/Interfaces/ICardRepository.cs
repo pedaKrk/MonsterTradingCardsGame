@@ -2,7 +2,7 @@
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface ICardRepository
+    public interface ICardRepository
     {
         void CreateCard(Card card);
         Card? GetCard(Guid cardId);

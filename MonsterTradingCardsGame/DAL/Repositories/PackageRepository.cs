@@ -5,7 +5,7 @@ using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Repositories
 {
-    internal class PackageRepository : IPackageRepository
+    public class PackageRepository : IPackageRepository
     {
         private readonly DataLayer dal = DataLayer.Instance;
         public void CreatePackage(Package package)

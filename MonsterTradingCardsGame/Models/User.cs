@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class User(string username, string password)
+    public class User(string username, string password)
     {
         public string Username { get; } = username;
         public string Password { get; } = password;

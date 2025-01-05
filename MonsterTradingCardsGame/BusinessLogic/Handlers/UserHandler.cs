@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    internal class UserHandler
+    public class UserHandler
     {
         public static async Task HandleUserRegistrationAsync(HttpResponseHandler responseHandler, string requestBody)
         {

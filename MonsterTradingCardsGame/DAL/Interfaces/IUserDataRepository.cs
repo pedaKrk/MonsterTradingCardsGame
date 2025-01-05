@@ -2,7 +2,7 @@
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface IUserDataRepository
+    public interface IUserDataRepository
     {
         void AddUserData(int userId, UserData userData);
         void UpdateUserData(int userId, UserData userData);

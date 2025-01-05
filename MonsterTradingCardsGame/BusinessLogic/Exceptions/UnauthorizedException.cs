@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
-    internal class UnauthorizedException : Exception
+    public class UnauthorizedException : Exception
     {
         public UnauthorizedException() : base() { }
         public UnauthorizedException(string message) : base(message) { }

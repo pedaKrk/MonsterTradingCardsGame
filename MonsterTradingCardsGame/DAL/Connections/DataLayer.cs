@@ -4,7 +4,7 @@ using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Connections
 {
-    internal class DataLayer : IDisposable
+    public class DataLayer : IDisposable
     {
         #region Singleton-Pattern
         private static DataLayer? instance;

@@ -3,7 +3,7 @@ using MonsterTradingCardsGame.Models;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    internal class BattleHandler
+    public class BattleHandler
     {
         private static readonly Queue<PlayerSession> WaitingPlayers = new();
 

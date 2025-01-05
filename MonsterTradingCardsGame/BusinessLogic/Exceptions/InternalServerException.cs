@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
-    internal class InternalServerException : Exception
+    public class InternalServerException : Exception
     {
         public InternalServerException() : base() { }
         public InternalServerException(string message) : base(message) { }

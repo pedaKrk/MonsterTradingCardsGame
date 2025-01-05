@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    internal class TradingHandler
+    public class TradingHandler
     {
         public static async Task HandleCreateTradeAsync(HttpResponseHandler responseHandler, Headers headers, string requestbody)
         {

@@ -3,7 +3,7 @@ using MonsterTradingCardsGame.Models;
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface IDeckRepository
+    public interface IDeckRepository
     {
         void AddCard(int userId, Guid cardId);
         List<Card> GetDeckFromUser(int userId);

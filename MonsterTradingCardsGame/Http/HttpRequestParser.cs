@@ -5,7 +5,7 @@ using MonsterTradingCardsGame.Models;
 
 namespace MonsterTradingCardsGame.Http
 {
-    internal class HttpRequestParser
+    public class HttpRequestParser
     {
         public static async Task<(string method, string path, string version)> ReadRequestLineAsync(StreamReader reader)
         {

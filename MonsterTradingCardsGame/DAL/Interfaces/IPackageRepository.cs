@@ -2,7 +2,7 @@
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface IPackageRepository
+    public interface IPackageRepository
     {
         void CreatePackage(Package package);
         Package? AcquirePackage();

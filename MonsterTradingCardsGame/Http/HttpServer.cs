@@ -5,7 +5,7 @@ using MonsterTradingCardsGame.BusinessLogic.Handlers;
 
 namespace MonsterTradingCardsGame.Http
 {
-    internal class HttpServer
+    public class HttpServer
     {
 
         private static readonly int _port = 10001;

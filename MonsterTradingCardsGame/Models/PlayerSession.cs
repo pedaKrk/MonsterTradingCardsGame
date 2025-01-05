@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class PlayerSession(User user, HttpResponseHandler responseHandler)
+    public class PlayerSession(User user, HttpResponseHandler responseHandler)
     {
         public User User { get; } = user;
         public HttpResponseHandler ResponseHandler { get; } = responseHandler;

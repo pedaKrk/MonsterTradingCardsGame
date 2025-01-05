@@ -5,7 +5,7 @@ using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Repositories
 {
-    internal class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DataLayer dal = DataLayer.Instance;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    enum Role
+    public enum Role
     {
         User,
         Admin

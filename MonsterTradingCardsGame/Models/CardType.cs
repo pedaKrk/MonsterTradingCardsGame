@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal enum CardType
+    public enum CardType
     {
         Monster,
         Spell

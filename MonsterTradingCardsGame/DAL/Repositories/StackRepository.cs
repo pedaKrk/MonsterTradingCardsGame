@@ -5,7 +5,7 @@ using System.Data;
 
 namespace MonsterTradingCardsGame.DAL.Repositories
 {
-    internal class StackRepository : IStackRepository
+    public class StackRepository : IStackRepository
     {
         private readonly DataLayer dal = DataLayer.Instance;
         public void AddCard(int userId, Guid cardId)

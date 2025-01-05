@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    internal class PackageHandler
+    public class PackageHandler
     {
         public static async Task HandleCreatePackageAsync(HttpResponseHandler responseHandler, Headers headers, string requestBody)
         {

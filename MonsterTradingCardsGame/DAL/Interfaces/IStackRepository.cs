@@ -2,7 +2,7 @@
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface IStackRepository
+    public interface IStackRepository
     {
         void AddCard(int userId, Guid cardId);
         Card? GetCardFromUser(int userId, Guid cardId);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
-    internal class NotFoundException : Exception
+    public class NotFoundException : Exception
     {
         public NotFoundException() : base() { }
         public NotFoundException(string message) : base(message) { }

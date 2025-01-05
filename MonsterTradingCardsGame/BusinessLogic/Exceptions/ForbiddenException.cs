@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
-    internal class ForbiddenException : Exception
+    public class ForbiddenException : Exception
     {
         public ForbiddenException() : base() { }
         public ForbiddenException(string message) : base(message) { }

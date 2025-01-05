@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal enum Element
+    public enum Element
     {
         Water,
         Fire,

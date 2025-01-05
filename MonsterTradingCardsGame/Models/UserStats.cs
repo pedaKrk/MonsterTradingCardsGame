@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Models
 {
-    internal class UserStats(string name)
+    public class UserStats(string name)
     {
         public string Name { get; set; } = name;
         public int Elo { get; set; } = 1000;

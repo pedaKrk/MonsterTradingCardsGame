@@ -2,7 +2,7 @@
 
 namespace MonsterTradingCardsGame.DAL.Interfaces
 {
-    internal interface ITradingDealRepository
+    public interface ITradingDealRepository
     {
         bool TradingDealExists(Guid tradingDealId);
         void AddTradingDeal(TradingDeal tradingDeal);

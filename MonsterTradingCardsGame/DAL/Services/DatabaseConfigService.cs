@@ -3,7 +3,7 @@ using MonsterTradingCardsGame.DAL.Configurations;
 
 namespace MonsterTradingCardsGame.DAL.Services
 {
-    internal class DatabaseConfigService
+    public class DatabaseConfigService
     {
         public static DatabaseConfig GetDatabaseConfig()
         {

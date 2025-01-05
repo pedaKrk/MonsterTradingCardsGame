@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Exceptions
 {
-    internal class BadRequestException : Exception
+    public class BadRequestException : Exception
     {
         public BadRequestException() : base() { }
         public BadRequestException(string message) : base(message) { }
