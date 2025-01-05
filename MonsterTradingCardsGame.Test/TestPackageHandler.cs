@@ -1,5 +1,4 @@
-﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
-using MonsterTradingCardsGame.BusinessLogic.Handlers;
+﻿using MonsterTradingCardsGame.BusinessLogic.Handlers;
 using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
 using MonsterTradingCardsGame.Http.Models;

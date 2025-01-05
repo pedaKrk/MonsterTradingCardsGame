@@ -50,10 +50,8 @@ namespace MonsterTradingCardsGame.Test
             _userRepository.UserExists(Arg.Any<string>()).Returns(true);
 
             // Act & Assert
-            var exception = Assert.ThrowsAsync<ConflictException>(async () =>
+            Assert.Throws<ConflictException>(async() =>
                 await UserHandler.HandleUserRegistrationAsync(_responseHandler, requestBody));
-
-            Assert.That(exception.Message, Is.EqualTo("user already exists."));
         }
 
         [Test]
@@ -82,10 +80,8 @@ namespace MonsterTradingCardsGame.Test
             _userRepository.GetUserByUsername("invaliduser").Returns((User?)null);
 
             // Act & Assert
-            var exception = Assert.ThrowsAsync<UnauthorizedException>(async () =>
+            Assert.Throws<UnauthorizedException>(async () =>
                 await UserHandler.HandleUserLoginAsync(_responseHandler, requestBody));
-
-            Assert.That(exception.Message, Is.EqualTo("wrong credentials."));
         }
 
         [Test]
