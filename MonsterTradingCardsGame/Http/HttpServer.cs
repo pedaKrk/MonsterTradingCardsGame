@@ -14,6 +14,9 @@ namespace MonsterTradingCardsGame.Http
          * ToDo: - Battle implementieren
          *       - RoleSystem
          *       - UnitTests
+         *       - Dokumentation
+         *       - Ablaufdiagramm
+         *       - batch file ausfuehren
          */
 
         private static readonly Dictionary<string, Func<HttpResponseHandler, Headers, string, Dictionary<string, string>?, Task>> _postRoutes = new()
