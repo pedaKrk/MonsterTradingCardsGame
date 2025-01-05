@@ -12,7 +12,6 @@ namespace MonsterTradingCardsGame.Http
 
         /*
          * ToDo: - Battle implementieren
-         *       - RoleSystem
          *       - UnitTests
          *       - Dokumentation
          *       - Ablaufdiagramm

@@ -16,15 +16,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
             {
                 var user = HttpRequestParser.AuthenticateAndGetUser(headers);
 
-                /*
-                 * erst wieder einfuegen, wenn Role System implementiert ist
-                 * 
                 if (user.Role != Role.Admin)
                 {
                     await responseHandler.SendForbiddenAsync(new {message = "provided user is not admin!" });
                     return;
                 }
-                */
 
                 var options = new JsonSerializerOptions
                 {
