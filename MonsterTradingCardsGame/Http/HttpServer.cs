@@ -1,11 +1,11 @@
 ﻿using System.Net.Sockets;
 using System.Net;
-using MonsterTradingCardsGame.Models;
 using MonsterTradingCardsGame.BusinessLogic.Handlers;
+using MonsterTradingCardsGame.Http.Models;
 
 namespace MonsterTradingCardsGame.Http
 {
-    public class HttpServer
+    public static class HttpServer
     {
 
         private static readonly int _port = 10001;

@@ -1,11 +1,12 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
 using MonsterTradingCardsGame.BusinessLogic.Services;
 using MonsterTradingCardsGame.DAL.Repositories;
+using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 
 namespace MonsterTradingCardsGame.Http
 {
-    public class HttpRequestParser
+    public static class HttpRequestParser
     {
         public static async Task<(string method, string path, string version)> ReadRequestLineAsync(StreamReader reader)
         {
@@ -67,7 +68,6 @@ namespace MonsterTradingCardsGame.Http
             string? authorizationToken = ReadAuthorizationHeader(headers) ?? throw new BadRequestException("bad request");
             string? username = TokenService.GetUsernameByToken(authorizationToken) ?? throw new UnauthorizedException("user not found.");
 
-            Console.WriteLine($"{username}: {authorizationToken}");
             return userRepository.GetUserByUsername(username) ?? throw new UnauthorizedException("user not found.");
         }
     }

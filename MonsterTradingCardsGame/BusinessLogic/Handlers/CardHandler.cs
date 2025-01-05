@@ -1,12 +1,13 @@
 ﻿using MonsterTradingCardsGame.BusinessLogic.Exceptions;
 using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
+using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    public class CardHandler
+    public static class CardHandler
     {
         public static async Task HandleGetAllCardsAsync(HttpResponseHandler responseHandler, Headers headers)
         {

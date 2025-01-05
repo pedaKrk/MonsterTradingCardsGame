@@ -4,19 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame.Models
+namespace MonsterTradingCardsGame.Http.Models
 {
     public class Headers
     {
-        private readonly Dictionary<string, string> _headers;
+        private readonly Dictionary<string, string> _headers = [];
 
-        public Headers()
+        public void AddHeader(string key, string value)
         {
-            _headers = [];
-        }
-
-        public void AddHeader(string key, string value) 
-        { 
             _headers[key] = value;
         }
         public bool HasKey(string key)

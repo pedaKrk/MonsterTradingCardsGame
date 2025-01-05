@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.Http;
+using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers

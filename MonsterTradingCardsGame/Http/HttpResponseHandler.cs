@@ -1,21 +1,11 @@
-﻿using MonsterTradingCardsGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MonsterTradingCardsGame.Http.Interfaces;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.Http
 {
-    public class HttpResponseHandler
+    public class HttpResponseHandler(StreamWriter writer) : IHttpResponseHandler
     {
-        private readonly StreamWriter _writer;
-
-        public HttpResponseHandler(StreamWriter writer)
-        {
-            _writer = writer;
-        }
+        private readonly StreamWriter _writer = writer;
 
         private async Task SendResponseAsync(string statusCode, string? contentType, string? responseBody)
         {

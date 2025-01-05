@@ -2,12 +2,13 @@
 using MonsterTradingCardsGame.BusinessLogic.Services;
 using MonsterTradingCardsGame.DAL.Repositories;
 using MonsterTradingCardsGame.Http;
+using MonsterTradingCardsGame.Http.Models;
 using MonsterTradingCardsGame.Models;
 using System.Text.Json;
 
 namespace MonsterTradingCardsGame.BusinessLogic.Handlers
 {
-    public class UserHandler
+    public static class UserHandler
     {
         public static async Task HandleUserRegistrationAsync(HttpResponseHandler responseHandler, string requestBody)
         {
@@ -26,7 +27,11 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                     throw new ConflictException("user already exists.");
                 }
 
-                Console.WriteLine($"username: {newUser.Username}, password: {newUser.Password}");
+                if(newUser.Username == "admin")
+                {
+                    newUser.Role = Role.Admin;
+                }
+
                 var userId = userRepository.AddUser(newUser);
 
                 UserDataRepository userDataRepository = new();
@@ -73,12 +78,10 @@ namespace MonsterTradingCardsGame.BusinessLogic.Handlers
                 if (token == null)
                 {
                     var newToken = TokenService.GenerateToken(user.Username);
-                    Console.WriteLine($"User {loginUser.Username} logged in successfully.");
                     await responseHandler.SendOkAsync(new { newToken });
                     return;
                 }
 
-                Console.WriteLine($"User {loginUser.Username} is already logged in with a valid token.");
                 await responseHandler.SendOkAsync(new { token });
             }
             catch (JsonException ex)
